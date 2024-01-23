@@ -203,4 +203,21 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(color, type);
     }
+
+    @Override
+    public String toString(){
+        String temp;
+        switch(type){
+            case ROOK -> {temp = "R"; break;}
+            case KNIGHT -> {temp = "N"; break;}
+            case BISHOP -> {temp = "B"; break;}
+            case QUEEN -> {temp = "Q"; break;}
+            case KING -> {temp = "K"; break;}
+            case PAWN -> {temp = "P"; break;}
+            default -> {temp = " "; break;}
+        }
+        if(color == ChessGame.TeamColor.BLACK)
+            temp = temp.toLowerCase();
+        return temp;
+    }
 }
