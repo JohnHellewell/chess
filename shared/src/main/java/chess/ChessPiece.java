@@ -220,4 +220,6 @@ public class ChessPiece {
             temp = temp.toLowerCase();
         return temp;
     }
+
+
 }
