@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -51,7 +52,40 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        return getBishopMoves(board, myPosition); //change later obv
+    }
+
+    private int isValidMove(ChessPosition pos, ChessBoard board){ // -1 is out of bounds OR landing on same team, 0 is clear, 1 is capture
+        if(pos.getRow() > 8 || pos.getRow() < 1 || pos.getColumn() >8 || pos.getColumn() < 1)
+            return -1;
+        ChessPiece land = board.getPiece(pos);
+        if(land == null)
+            return 0;
+        if(land.getTeamColor()==color)
+            return -1;
+        else
+            return 1;
+    }
+
+    private ArrayList<ChessMove> getBishopMoves(ChessBoard board, ChessPosition pos){
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        for(int i=0; i<4; i++){
+            int x_inc = i%2*2-1; //-1, 1, -1, 1
+            int y_inc = i/2*2-1; //-1, -1, 1, 1
+            for(int j=1; j<=8; j++){
+                ChessPosition test = new ChessPosition(pos.getRow()+x_inc*j, pos.getColumn()+y_inc*j);
+                int valid = isValidMove(test, board);
+                if(valid == -1)
+                    break;
+                else {
+                    moves.add(new ChessMove(pos, test, null)); //add move
+
+                    if(valid == 1)
+                        break;
+                }
+            }
+        }
+        return moves;
     }
 
     @Override
