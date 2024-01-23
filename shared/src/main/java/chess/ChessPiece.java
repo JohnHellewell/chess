@@ -56,6 +56,7 @@ public class ChessPiece {
         return switch (board.getPiece(myPosition).getPieceType()) {
             case BISHOP -> getBishopMoves(board, myPosition);
             case ROOK -> getRookMoves(board, myPosition);
+            case QUEEN -> getQueenMoves(board, myPosition);
             default -> null;
         };
 
@@ -71,6 +72,12 @@ public class ChessPiece {
             return -1;
         else
             return 1;
+    }
+
+    private ArrayList<ChessMove> getQueenMoves(ChessBoard board, ChessPosition pos){
+        ArrayList<ChessMove> moves = getBishopMoves(board, pos);
+        moves.addAll(getRookMoves(board, pos));
+        return moves;
     }
 
     private ArrayList<ChessMove> getBishopMoves(ChessBoard board, ChessPosition pos){
