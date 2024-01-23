@@ -52,7 +52,13 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return getBishopMoves(board, myPosition); //change later obv
+        //Note to TAs: this switch format is super cool, it automatically adjusted it in IntelliJ
+        return switch (board.getPiece(myPosition).getPieceType()) {
+            case BISHOP -> getBishopMoves(board, myPosition);
+            case ROOK -> getRookMoves(board, myPosition);
+            default -> null;
+        };
+
     }
 
     private int isValidMove(ChessPosition pos, ChessBoard board){ // -1 is out of bounds OR landing on same team, 0 is clear, 1 is capture
@@ -72,6 +78,27 @@ public class ChessPiece {
         for(int i=0; i<4; i++){
             int x_inc = i%2*2-1; //-1, 1, -1, 1
             int y_inc = i/2*2-1; //-1, -1, 1, 1
+            for(int j=1; j<=8; j++){
+                ChessPosition test = new ChessPosition(pos.getRow()+x_inc*j, pos.getColumn()+y_inc*j);
+                int valid = isValidMove(test, board);
+                if(valid == -1)
+                    break;
+                else {
+                    moves.add(new ChessMove(pos, test, null)); //add move
+
+                    if(valid == 1)
+                        break;
+                }
+            }
+        }
+        return moves;
+    }
+
+    private ArrayList<ChessMove> getRookMoves(ChessBoard board, ChessPosition pos){
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        for(int i=0; i<4; i++){
+            int x_inc = i/2 * (i%2*2-1); //0, 0, -1, 1
+            int y_inc = (3-i)/2 * (i%2*2-1); //1, -1, 0, 0
             for(int j=1; j<=8; j++){
                 ChessPosition test = new ChessPosition(pos.getRow()+x_inc*j, pos.getColumn()+y_inc*j);
                 int valid = isValidMove(test, board);
