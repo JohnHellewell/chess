@@ -57,6 +57,7 @@ public class ChessPiece {
             case BISHOP -> getBishopMoves(board, myPosition);
             case ROOK -> getRookMoves(board, myPosition);
             case QUEEN -> getQueenMoves(board, myPosition);
+            case KNIGHT -> getKnightMoves(board, myPosition);
             default -> null;
         };
 
@@ -72,6 +73,17 @@ public class ChessPiece {
             return -1;
         else
             return 1;
+    }
+
+    private ArrayList<ChessMove> getKnightMoves(ChessBoard board, ChessPosition pos){
+        int[][] testMoves = { {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2} };
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        for(int i=0; i<8; i++){
+            ChessPosition temp = new ChessPosition(pos.getRow()+testMoves[i][0], pos.getColumn()+testMoves[i][1]);
+            if(isValidMove(temp, board)!=-1)
+                moves.add(new ChessMove(pos, temp, null));
+        }
+        return moves;
     }
 
     private ArrayList<ChessMove> getQueenMoves(ChessBoard board, ChessPosition pos){
