@@ -59,6 +59,7 @@ public class ChessPiece {
             case QUEEN -> getQueenMoves(board, myPosition);
             case KNIGHT -> getKnightMoves(board, myPosition);
             case KING -> getKingMoves(board, myPosition);
+            case PAWN -> getPawnMoves(board, myPosition);
             default -> null;
         };
 
@@ -74,6 +75,50 @@ public class ChessPiece {
             return -1;
         else
             return 1;
+    }
+
+    private ArrayList<ChessMove> getPawnMoves(ChessBoard board, ChessPosition pos){
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        int forward;
+        if(color == ChessGame.TeamColor.WHITE)
+            forward = 1;
+        else
+            forward = -1;
+
+        //forward move
+        ChessPosition temp = new ChessPosition(pos.getRow()+forward, pos.getColumn());
+
+        if(isValidMove(temp, board)==0) {
+            if(forward*pos.getRow()==-2||forward*pos.getRow()==7){ //promotion move
+                moves.add(new ChessMove(pos, temp, PieceType.KNIGHT));
+                moves.add(new ChessMove(pos, temp, PieceType.ROOK));
+                moves.add(new ChessMove(pos, temp, PieceType.BISHOP));
+                moves.add(new ChessMove(pos, temp, PieceType.QUEEN));
+            }
+            else
+                moves.add(new ChessMove(pos, temp, null)); //non-promotion move
+        }
+        //jump move
+        if( (forward*pos.getRow()==2||forward* pos.getRow()==-7)                                      //piece is on first col
+                && isValidMove(new ChessPosition(pos.getRow()+forward, pos.getColumn()), board)==0      //square ahead empty
+                && isValidMove(new ChessPosition(pos.getRow()+forward*2, pos.getColumn()), board)==0){  //2nd square ahead empty
+            moves.add(new ChessMove(pos, new ChessPosition(pos.getRow()+forward*2, pos.getColumn()), null));
+        }
+        //attack moves
+        for(int i=-1; i<2; i+=2) { //-1, 1
+            temp = new ChessPosition(pos.getRow()+forward, pos.getColumn() + i);
+            if (isValidMove(temp, board) == 1) { //capture
+                if (forward * pos.getRow() == -2 || forward * pos.getRow() == 7) { //promotion move
+                    moves.add(new ChessMove(pos, temp, PieceType.KNIGHT));
+                    moves.add(new ChessMove(pos, temp, PieceType.ROOK));
+                    moves.add(new ChessMove(pos, temp, PieceType.BISHOP));
+                    moves.add(new ChessMove(pos, temp, PieceType.QUEEN));
+                }
+                else
+                    moves.add(new ChessMove(pos, temp, null)); //non-promotion move
+            }
+        }
+        return moves;
     }
 
     private ArrayList<ChessMove> getKingMoves(ChessBoard board, ChessPosition pos){
