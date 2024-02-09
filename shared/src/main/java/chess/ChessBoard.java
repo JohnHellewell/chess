@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -44,6 +46,14 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         return board[position.getRow()-1][position.getColumn()-1]; //assuming index 1-8
+    }
+
+    public Collection<ChessMove> getMoves(ChessPosition pos){
+        if(getPiece(pos)==null)
+            return null;
+        else
+            return getPiece(pos).pieceMoves(this, pos);
+
     }
 
     /**
