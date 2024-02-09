@@ -63,9 +63,19 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        //make without castling or en passant first
-        board.makeMove(move);
+        //check that its even a valid move
+        ArrayList<ChessMove> moves = getTeamMoves(turn, false);
+
+        if(!moves.contains(move))
+            throw new InvalidMoveException("Invalid move!");
+        else {
+            board.makeMove(move);
+            turn = getOppositeTeam(turn);
+        }
+
     }
+
+
 
     /**
      * Determines if the given team is in check
