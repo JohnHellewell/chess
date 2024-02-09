@@ -99,6 +99,13 @@ public class ChessBoard {
         lastMove = null;
     }
 
+    public void setBoard(ChessPiece[][] board) {
+        this.board = board;
+    }
+
+    public ChessPiece[][] getBoard(){
+        return board;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -90,7 +90,7 @@ public class ChessGame {
             return TeamColor.WHITE;
     }
     public boolean isInCheck(TeamColor teamColor) {
-        ArrayList<ChessMove> moves = getTeamMoves(getOppositeTeam(teamColor));
+        ArrayList<ChessMove> moves = getTeamMoves(getOppositeTeam(teamColor), true);
         ChessPosition kingPos = findKing(teamColor);
         if(kingPos==null){
             return false;
@@ -121,7 +121,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return getTeamMoves(teamColor).isEmpty();
+        return getTeamMoves(teamColor, false).isEmpty();
     }
 
     /**
@@ -133,7 +133,7 @@ public class ChessGame {
         this.board = board;
     }
 
-    private ArrayList<ChessMove> getTeamMoves(TeamColor color){ //need to factor checks FIXME
+    private ArrayList<ChessMove> getTeamMoves(TeamColor color, boolean includeChecks){ //need to factor checks FIXME
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         for(int i=1; i<=8; i++){
             for(int j=1; j<=8; j++){
@@ -145,7 +145,18 @@ public class ChessGame {
                 }
             }
         }
-        return moves;
+        if(includeChecks)
+            return moves;
+        //filter out moves that put king in check
+        ArrayList<ChessMove> uncheckedMoves = new ArrayList<ChessMove>();
+        for(ChessMove m : moves){
+            ChessPiece[][] save = board.getBoard();
+            board.makeMove(m);
+            if(!isInCheck(color))
+                uncheckedMoves.add(m);
+            board.setBoard(save);
+        }
+        return uncheckedMoves;
     }
 
     /**
