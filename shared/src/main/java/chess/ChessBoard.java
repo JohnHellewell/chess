@@ -27,6 +27,10 @@ public class ChessBoard {
         lastMove = null;
     }
 
+    public boolean[] getCastles(){
+        return {whiteLong, whiteShort, blackLong, blackShort};
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -54,6 +58,7 @@ public class ChessBoard {
             return null;
         else {
             moves.addAll(getPiece(pos).pieceMoves(this, pos));
+            moves.addAll(getCastleMoves(pos));
             return moves;
         }
 
@@ -64,7 +69,10 @@ public class ChessBoard {
         ChessGame.TeamColor color = getPiece(pos).getTeamColor();
         if(color== ChessGame.TeamColor.WHITE){
             if(canWhiteLong()){
-                moves.add(new ChessMove(new ChessPosition(0, 4), new ChessPosition(0, 2), null));
+                moves.add(new ChessMove(new ChessPosition(1, 5), new ChessPosition(1, 3), null));
+            }
+            if(canWhiteShort()){
+                moves.add(new ChessMove(new ChessPosition(1, 5), new ChessPosition(1, 7), null));
             }
         } else { //black
 
@@ -84,11 +92,11 @@ public class ChessBoard {
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
                 if(board[i][j]!=null && board[i][j].getTeamColor()== ChessGame.TeamColor.BLACK){
-                    blackMoves.addAll(board[i][j].pieceMoves(this, new ChessPosition(i, j)));
+                    blackMoves.addAll(board[i][j].pieceMoves(this, new ChessPosition(i+1, j+1)));
                 }
             }
         }
-        ChessPosition[] noCheckZone = {new ChessPosition(0, 2), new ChessPosition(0, 3), new ChessPosition(0, 4)};
+        ChessPosition[] noCheckZone = {new ChessPosition(1, 3), new ChessPosition(1, 4), new ChessPosition(1, 5)};
         for(ChessPosition z : noCheckZone){
             for(ChessMove m : blackMoves){
                 if(m.getEndPosition().equals(z)){
@@ -98,8 +106,30 @@ public class ChessBoard {
         }
         return temp;
     }
-    private boolean canWhiteShort(){
-        return false;
+    private boolean canWhiteShort(){ //not finished, needs to check for checks
+        ChessPiece rook = board[0][7];
+        ChessPiece king = board[0][4];
+        boolean temp = whiteShort && rook!=null&&rook.getTeamColor()== ChessGame.TeamColor.WHITE&&rook.getPieceType()== ChessPiece.PieceType.ROOK
+                && board[0][5]==null&&board[0][6]==null
+                && king!=null && king.getTeamColor()== ChessGame.TeamColor.WHITE&&king.getPieceType()== ChessPiece.PieceType.KING;
+
+        ArrayList<ChessMove> blackMoves = new ArrayList<ChessMove>();
+        for(int i=0; i<8; i++){
+            for(int j=0; j<8; j++){
+                if(board[i][j]!=null && board[i][j].getTeamColor()== ChessGame.TeamColor.BLACK){
+                    blackMoves.addAll(board[i][j].pieceMoves(this, new ChessPosition(i+1, j+1)));
+                }
+            }
+        }
+        ChessPosition[] noCheckZone = {new ChessPosition(1, 5), new ChessPosition(1, 6), new ChessPosition(1, 7)};
+        for(ChessPosition z : noCheckZone){
+            for(ChessMove m : blackMoves){
+                if(m.getEndPosition().equals(z)){
+                    return false;
+                }
+            }
+        }
+        return temp;
     }
 
     public void makeMove(ChessMove move){
