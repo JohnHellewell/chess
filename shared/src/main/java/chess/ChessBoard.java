@@ -27,8 +27,20 @@ public class ChessBoard {
         lastMove = null;
     }
 
-    public boolean[] getCastles(){
-        return {whiteLong, whiteShort, blackLong, blackShort};
+    public boolean getWhiteShort() {
+        return whiteShort;
+    }
+
+    public boolean getWhiteLong() {
+        return whiteLong;
+    }
+
+    public boolean getBlackShort() {
+        return blackShort;
+    }
+
+    public boolean getBlackLong() {
+        return blackLong;
     }
 
     /**
