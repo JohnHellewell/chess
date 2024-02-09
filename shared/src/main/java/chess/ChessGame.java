@@ -72,7 +72,6 @@ public class ChessGame {
             board.makeMove(move);
             turn = getOppositeTeam(turn);
         }
-
     }
 
 

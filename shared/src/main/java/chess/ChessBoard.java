@@ -69,7 +69,24 @@ public class ChessBoard {
         board[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1] = temp;
         board[move.getStartPosition().getRow()-1][move.getStartPosition().getColumn()-1] = null;
 
-
+        //set castling booleans
+        if(temp.getPieceType()== ChessPiece.PieceType.KING){
+            if(temp.getTeamColor()== ChessGame.TeamColor.WHITE){
+               whiteLong = false;
+               whiteShort = false;
+            } else {
+                blackLong = false;
+                blackShort = false;
+            }
+        }
+        if(move.getStartPosition().equals(new ChessPosition(1, 1))) //white rook, long
+            whiteLong = false;
+        if(move.getStartPosition().equals(new ChessPosition(1, 8))) //white rook, long
+            whiteShort = false;
+        if(move.getStartPosition().equals(new ChessPosition(8, 1))) //white rook, long
+            blackLong = false;
+        if(move.getStartPosition().equals(new ChessPosition(8, 8))) //white rook, long
+            blackShort = false;
     }
 
     /**
