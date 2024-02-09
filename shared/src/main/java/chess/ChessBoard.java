@@ -59,6 +59,49 @@ public class ChessBoard {
 
     }
 
+    private ArrayList<ChessMove> getCastleMoves(ChessPosition pos){
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        ChessGame.TeamColor color = getPiece(pos).getTeamColor();
+        if(color== ChessGame.TeamColor.WHITE){
+            if(canWhiteLong()){
+                moves.add(new ChessMove(new ChessPosition(0, 4), new ChessPosition(0, 2), null));
+            }
+        } else { //black
+
+        }
+
+        return moves;
+    }
+
+    private boolean canWhiteLong(){ //not finished, needs to check for checks
+        ChessPiece rook = board[0][0];
+        ChessPiece king = board[0][4];
+        boolean temp = whiteLong && rook!=null&&rook.getTeamColor()== ChessGame.TeamColor.WHITE&&rook.getPieceType()== ChessPiece.PieceType.ROOK
+                && board[0][1]==null&&board[0][2]==null&&board[0][3]==null
+                && king!=null && king.getTeamColor()== ChessGame.TeamColor.WHITE&&king.getPieceType()== ChessPiece.PieceType.KING;
+
+        ArrayList<ChessMove> blackMoves = new ArrayList<ChessMove>();
+        for(int i=0; i<8; i++){
+            for(int j=0; j<8; j++){
+                if(board[i][j]!=null && board[i][j].getTeamColor()== ChessGame.TeamColor.BLACK){
+                    blackMoves.addAll(board[i][j].pieceMoves(this, new ChessPosition(i, j)));
+                }
+            }
+        }
+        ChessPosition[] noCheckZone = {new ChessPosition(0, 2), new ChessPosition(0, 3), new ChessPosition(0, 4)};
+        for(ChessPosition z : noCheckZone){
+            for(ChessMove m : blackMoves){
+                if(m.getEndPosition().equals(z)){
+                    return false;
+                }
+            }
+        }
+        return temp;
+    }
+    private boolean canWhiteShort(){
+        return false;
+    }
+
     public void makeMove(ChessMove move){
         ChessPiece temp = getPiece(move.getStartPosition());
         //check for promo piece
@@ -125,6 +168,8 @@ public class ChessBoard {
 
         lastMove = null;
     }
+
+    
 
     public void setBoard(ChessPiece[][] board) {
         this.board = board;
