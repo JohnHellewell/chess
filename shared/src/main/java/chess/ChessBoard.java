@@ -56,6 +56,12 @@ public class ChessBoard {
 
     }
 
+    public void makeMove(ChessMove move){
+        //make without castling first
+        board[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1] = getPiece(move.getStartPosition());
+        board[move.getStartPosition().getRow()-1][move.getStartPosition().getColumn()-1] = null;
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
