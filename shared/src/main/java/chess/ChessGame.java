@@ -65,6 +65,7 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //check that its even a valid move
         ArrayList<ChessMove> moves = getTeamMoves(turn, false);
+        moves.addAll(board.getCastleMoves(turn));
 
         if(!moves.contains(move))
             throw new InvalidMoveException("Invalid move!");
