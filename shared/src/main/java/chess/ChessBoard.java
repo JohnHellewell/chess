@@ -57,9 +57,16 @@ public class ChessBoard {
     }
 
     public void makeMove(ChessMove move){
+        ChessPiece temp = getPiece(move.getStartPosition());
+        //check for promo piece
+        if(move.getPromotionPiece()!=null){
+            temp = new ChessPiece(temp.getTeamColor(), move.getPromotionPiece());
+        }
         //make without castling first
-        board[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1] = getPiece(move.getStartPosition());
+        board[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1] = temp;
         board[move.getStartPosition().getRow()-1][move.getStartPosition().getColumn()-1] = null;
+
+
     }
 
     /**
