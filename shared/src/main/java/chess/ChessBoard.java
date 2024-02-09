@@ -43,6 +43,22 @@ public class ChessBoard {
         return blackLong;
     }
 
+    public void setWhiteShort(boolean whiteShort) {
+        this.whiteShort = whiteShort;
+    }
+
+    public void setWhiteLong(boolean whiteLong) {
+        this.whiteLong = whiteLong;
+    }
+
+    public void setBlackShort(boolean blackShort) {
+        this.blackShort = blackShort;
+    }
+
+    public void setBlackLong(boolean blackLong) {
+        this.blackLong = blackLong;
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *

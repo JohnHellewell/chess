@@ -173,11 +173,15 @@ public class ChessGame {
                     save[i-1][j-1] = board.getPiece(new ChessPosition(i, j));
                 }
             }
-
+            boolean[] temp = {board.getWhiteLong(), board.getWhiteShort(), board.getBlackLong(), board.getBlackShort()};
             board.makeMove(m);
             if(!isInCheck(color))
                 uncheckedMoves.add(m);
             board.setBoard(save);
+            board.setWhiteLong(temp[0]);
+            board.setWhiteShort(temp[1]);
+            board.setBlackLong(temp[2]);
+            board.setBlackShort(temp[3]);
         }
         return uncheckedMoves;
     }
