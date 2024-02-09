@@ -13,6 +13,8 @@ import java.util.Objects;
 public class ChessGame {
     TeamColor turn;
     ChessBoard board;
+
+
     public ChessGame() {
         turn = null;
         board = null;
@@ -174,6 +176,7 @@ public class ChessGame {
                     save[i-1][j-1] = board.getPiece(new ChessPosition(i, j));
                 }
             }
+            ChessMove lastMove = board.getLastMove();
             boolean[] temp = {board.getWhiteLong(), board.getWhiteShort(), board.getBlackLong(), board.getBlackShort()};
             board.makeMove(m);
             if(!isInCheck(color))
@@ -183,6 +186,7 @@ public class ChessGame {
             board.setWhiteShort(temp[1]);
             board.setBlackLong(temp[2]);
             board.setBlackShort(temp[3]);
+            board.setLastMove(lastMove);
         }
         return uncheckedMoves;
     }

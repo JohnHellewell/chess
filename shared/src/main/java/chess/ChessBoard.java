@@ -1,5 +1,6 @@
 package chess;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +28,14 @@ public class ChessBoard {
         blackShort = true;
         blackLong = true;
         lastMove = null;
+    }
+
+    public ChessMove getLastMove() {
+        return lastMove;
+    }
+
+    public void setLastMove(ChessMove lastMove) {
+        this.lastMove = lastMove;
     }
 
     public boolean getWhiteShort() {
@@ -89,6 +98,7 @@ public class ChessBoard {
         else {
             moves.addAll(getPiece(pos).pieceMoves(this, pos));
             moves.addAll(getCastleMoves(getPiece(pos).getTeamColor()));
+            moves.addAll(getEnPassantMoves(getPiece(pos).getTeamColor()));
             return moves;
         }
 
@@ -238,6 +248,9 @@ public class ChessBoard {
                 board[move.getEndPosition().getRow()-1][7] = null;
             }
         }
+
+        //set last move
+        lastMove = move;
         //set castling booleans
         if(temp.getPieceType()== ChessPiece.PieceType.KING){
             if(temp.getTeamColor()== ChessGame.TeamColor.WHITE){
@@ -256,6 +269,32 @@ public class ChessBoard {
             blackLong = false;
         if(move.getStartPosition().equals(new ChessPosition(8, 8))) //white rook, long
             blackShort = false;
+    }
+
+    private boolean wasLastMoveJump(){
+        return(getPiece(lastMove.getEndPosition()).getPieceType()== ChessPiece.PieceType.PAWN
+                && abs(lastMove.getStartPosition().getRow()-lastMove.getEndPosition().getRow())==2);
+    }
+
+    private ArrayList<ChessMove> getEnPassantMoves(ChessGame.TeamColor color){
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        if(lastMove!=null && wasLastMoveJump()){
+            for(int i=-1; i<2; i+=2) {//-1, 1 for Cols
+                if(lastMove.getEndPosition().getColumn()+i >= 1 && lastMove.getEndPosition().getColumn() <=8){ //the new move is in range
+                    ChessPosition tempPos = new ChessPosition(lastMove.getEndPosition().getRow(), lastMove.getEndPosition().getColumn()+i);
+                    if(tempPos.getColumn()>=1&&tempPos.getColumn()<=8){
+                        ChessPiece temp = board[lastMove.getEndPosition().getRow()-1][(lastMove.getEndPosition().getColumn()-1)+i];
+                        if(temp!=null && temp.getPieceType()== ChessPiece.PieceType.PAWN && temp.getTeamColor()==color){
+                            moves.add(new ChessMove(tempPos,
+                                    new ChessPosition(lastMove.getEndPosition().getRow(),
+                                            (lastMove.getEndPosition().getColumn()+lastMove.getStartPosition().getColumn())/2),
+                                    null));
+                        }
+                    }
+                }
+            }
+        }
+        return moves;
     }
 
     /**
