@@ -53,7 +53,6 @@ public class ChessGame {
         if(board.getPiece(startPosition)==null){
             return null;
         }
-        
         return removeCheckMoves(board.getMoves(startPosition), board.getPiece(startPosition).getTeamColor());
     }
 
@@ -159,7 +158,13 @@ public class ChessGame {
         //filter out moves that put king in check
         ArrayList<ChessMove> uncheckedMoves = new ArrayList<ChessMove>();
         for(ChessMove m : moves){
-            ChessPiece[][] save = board.getBoard();
+            ChessPiece[][] save = new ChessPiece[8][8];
+            for(int i=1; i<=8; i++){
+                for(int j=1; j<=8; j++){
+                    save[i-1][j-1] = board.getPiece(new ChessPosition(i, j));
+                }
+            }
+
             board.makeMove(m);
             if(!isInCheck(color))
                 uncheckedMoves.add(m);
