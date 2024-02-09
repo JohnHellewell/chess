@@ -50,7 +50,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return board.getMoves(startPosition);
+        if(board.getPiece(startPosition)==null){
+            return null;
+        }
+        
+        return removeCheckMoves(board.getMoves(startPosition), board.getPiece(startPosition).getTeamColor());
     }
 
     /**
@@ -96,7 +100,7 @@ public class ChessGame {
             return false;
         } else {
             for(ChessMove m : moves){
-                if(m.getEndPosition().equals(kingPos))
+                if(m.getEndPosition().getRow()==kingPos.getRow() && m.getEndPosition().getColumn()==kingPos.getColumn())
                     return true;
             }
             return false;
@@ -147,6 +151,11 @@ public class ChessGame {
         }
         if(includeChecks)
             return moves;
+        else
+            return removeCheckMoves(moves, color);
+    }
+
+    private ArrayList<ChessMove> removeCheckMoves(ArrayList<ChessMove> moves, TeamColor color){
         //filter out moves that put king in check
         ArrayList<ChessMove> uncheckedMoves = new ArrayList<ChessMove>();
         for(ChessMove m : moves){

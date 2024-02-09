@@ -48,11 +48,14 @@ public class ChessBoard {
         return board[position.getRow()-1][position.getColumn()-1]; //assuming index 1-8
     }
 
-    public Collection<ChessMove> getMoves(ChessPosition pos){
+    public ArrayList<ChessMove> getMoves(ChessPosition pos){
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         if(getPiece(pos)==null)
             return null;
-        else
-            return getPiece(pos).pieceMoves(this, pos);
+        else {
+            moves.addAll(getPiece(pos).pieceMoves(this, pos));
+            return moves;
+        }
 
     }
 
