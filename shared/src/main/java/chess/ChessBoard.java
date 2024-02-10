@@ -228,6 +228,12 @@ public class ChessBoard {
                 && abs(move.getStartPosition().getColumn()-move.getEndPosition().getColumn())==2);
     }
 
+    private boolean isEnPassant(ChessMove move){ //has not yet been moved
+        return getPiece(move.getStartPosition()).getPieceType()== ChessPiece.PieceType.PAWN && //is a pawn
+            move.getStartPosition().getColumn()!=move.getEndPosition().getColumn() && //its attacking
+            getPiece(move.getEndPosition())==null; //no piece is getting captured on the square
+    }
+
     public void makeMove(ChessMove move){
 
 
@@ -235,6 +241,18 @@ public class ChessBoard {
         //check for promo piece
         if(move.getPromotionPiece()!=null){
             temp = new ChessPiece(temp.getTeamColor(), move.getPromotionPiece());
+        }
+
+        //check en passant
+        if(isEnPassant(move)){
+            board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1] = temp;
+            board[move.getStartPosition().getRow() - 1][move.getStartPosition().getColumn() - 1] = null;
+            //get rid of pawn on other square
+            board[move.getStartPosition().getRow()-1][move.getEndPosition().getColumn()-1] = null;
+
+            //finish and return
+            lastMove = move;
+            return;
         }
 
         board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1] = temp;
@@ -276,20 +294,20 @@ public class ChessBoard {
                 && abs(lastMove.getStartPosition().getRow()-lastMove.getEndPosition().getRow())==2);
     }
 
-    private ArrayList<ChessMove> getEnPassantMoves(ChessGame.TeamColor color){
+    public ArrayList<ChessMove> getEnPassantMoves(ChessGame.TeamColor color){
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         if(lastMove!=null && wasLastMoveJump()){
             for(int i=-1; i<2; i+=2) {//-1, 1 for Cols
                 if(lastMove.getEndPosition().getColumn()+i >= 1 && lastMove.getEndPosition().getColumn() <=8){ //the new move is in range
                     ChessPosition tempPos = new ChessPosition(lastMove.getEndPosition().getRow(), lastMove.getEndPosition().getColumn()+i);
-                    if(tempPos.getColumn()>=1&&tempPos.getColumn()<=8){
-                        ChessPiece temp = board[lastMove.getEndPosition().getRow()-1][(lastMove.getEndPosition().getColumn()-1)+i];
-                        if(temp!=null && temp.getPieceType()== ChessPiece.PieceType.PAWN && temp.getTeamColor()==color){
-                            moves.add(new ChessMove(tempPos,
-                                    new ChessPosition(lastMove.getEndPosition().getRow(),
-                                            (lastMove.getEndPosition().getColumn()+lastMove.getStartPosition().getColumn())/2),
-                                    null));
-                        }
+                    ChessPiece temp = board[lastMove.getEndPosition().getRow()-1][(lastMove.getEndPosition().getColumn()-1)+i];
+                    if(temp!=null && temp.getPieceType()== ChessPiece.PieceType.PAWN && temp.getTeamColor()==color){
+                        moves.add(new ChessMove(tempPos,
+                                //new ChessPosition(lastMove.getEndPosition().getRow(),
+                                  //      (lastMove.getEndPosition().getColumn()+lastMove.getStartPosition().getColumn())/2)
+                                new ChessPosition((lastMove.getEndPosition().getRow()+lastMove.getStartPosition().getRow())/2,
+                                        lastMove.getEndPosition().getColumn()),
+                                null));
                     }
                 }
             }

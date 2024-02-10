@@ -68,6 +68,7 @@ public class ChessGame {
         //check that its even a valid move
         ArrayList<ChessMove> moves = getTeamMoves(turn, false);
         moves.addAll(board.getCastleMoves(turn));
+        moves.addAll(board.getEnPassantMoves(turn));
 
         if(!moves.contains(move))
             throw new InvalidMoveException("Invalid move!");
@@ -148,7 +149,7 @@ public class ChessGame {
         this.board = board;
     }
 
-    private ArrayList<ChessMove> getTeamMoves(TeamColor color, boolean includeChecks){ //need to factor checks FIXME
+    private ArrayList<ChessMove> getTeamMoves(TeamColor color, boolean includeChecks){
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         for(int i=1; i<=8; i++){
             for(int j=1; j<=8; j++){
