@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
 
@@ -7,7 +8,12 @@ public class ClearHandler {
 
     public ClearHandler(){};
 
-    public Object handleReq(Request req, Response res){
+    public Object handleReq(Request req, Response res){//FIXME, always returns 200
+
+        //Gson gson = new Gson();
+        //ClearRequest r = (ClearRequest)gson.fromJson(String.valueOf(req), ClearRequest.class); not rally needed
+
+
         // Set HTTP status code
         res.status(200);
 
