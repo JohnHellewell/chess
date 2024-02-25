@@ -31,11 +31,21 @@ public class DataAccess {
         return null;
     }
 
-    public static String addUser(String username, String password, String email){ //returns auth data
-        userData.add(new UserData(username, password, email));
-        String token = UUID.randomUUID().toString();
+    public static String login(String username){
+        String token = generateAuthToken();
         authData.add(new AuthData(token, username));
         return token;
+    }
+
+    public static String addUser(String username, String password, String email){ //returns auth data
+        userData.add(new UserData(username, password, email));
+        String token = generateAuthToken();
+        authData.add(new AuthData(token, username));
+        return token;
+    }
+
+    private static String generateAuthToken(){
+        return UUID.randomUUID().toString();
     }
 
 }

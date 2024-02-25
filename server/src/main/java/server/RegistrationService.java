@@ -17,11 +17,11 @@ public class RegistrationService {
             JResponse res = new JResponse(200);
             res.setUsername(req.getUsername());
             res.setAuthToken(auth);
-            return res;//FIXME should return multiple items
+            return res;
         } else { //username already exists!//works
             JResponse res = new JResponse(403);
             res.setMessage("Error: already taken");
-            return res; //add an error message to this in the future FIXME
+            return res;
         }
     }
 }

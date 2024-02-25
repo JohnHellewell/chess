@@ -20,7 +20,7 @@ public class Server {
         Spark.post("/user", (request, response) -> (new RegistrationHandler()).handleReq(request, response));
 
         //Login
-        Spark.post("/session", (request, response) -> (new ClearHandler()).handleReq(request, response));
+        Spark.post("/session", (request, response) -> (new LoginHandler()).handleReq(request, response));
 
         //Logout
         Spark.delete("/session", (request, response) -> (new ClearHandler()).handleReq(request, response));
