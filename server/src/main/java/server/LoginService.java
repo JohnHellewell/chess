@@ -21,7 +21,7 @@ public class LoginService {
             return res;
         } else {
             //see if password matches
-            if(user.getPassword()!=req.getPassword()){
+            if(!user.getPassword().equals(req.getPassword())){ //normal user login is getting an error here
                 //wrong password!
                 JResponse res = new JResponse(401);
                 res.setMessage("Error: unauthorized");

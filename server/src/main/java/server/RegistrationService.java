@@ -5,7 +5,7 @@ import dataAccess.DataAccessException;
 
 public class RegistrationService {
 
-    public RegistrationService(){};
+    public RegistrationService(){}
 
     public JResponse registerUser(RegistrationRequest req) throws DataAccessException { //make this return some sort of status, perhaps json
         //check that the request fields are valid
