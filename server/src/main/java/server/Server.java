@@ -4,6 +4,8 @@ import spark.*;
 
 public class Server {
 
+
+
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
@@ -15,7 +17,7 @@ public class Server {
         Spark.delete("/db", (request, response) -> (new ClearHandler()).handleReq(request, response));
 
         //Register user
-        Spark.post("/user", (request, response) -> (new ClearHandler()).handleReq(request, response));
+        Spark.post("/user", (request, response) -> (new RegistrationHandler()).handleReq(request, response));
 
         //Login
         Spark.post("/session", (request, response) -> (new ClearHandler()).handleReq(request, response));

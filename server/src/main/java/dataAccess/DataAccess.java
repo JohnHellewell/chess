@@ -5,9 +5,9 @@ import model.*;
 import java.util.ArrayList;
 
 public class DataAccess {
-    private static ArrayList<UserData> userData;
-    private static ArrayList<GameData> gameData;
-    private static ArrayList<AuthData> authData;
+    private static ArrayList<UserData> userData = new ArrayList<UserData>();
+    private static ArrayList<GameData> gameData = new ArrayList<GameData>();
+    private static ArrayList<AuthData> authData = new ArrayList<AuthData>();
     public DataAccess(){
         userData = new ArrayList<UserData>();
         gameData = new ArrayList<GameData>();

@@ -6,12 +6,12 @@ public class RegistrationService {
 
     public RegistrationService(){};
 
-    public int registerUser(String username, String password, String email){ //make this return some sort of status, perhaps json
-        if(DataAccess.getUser(username)==null){
-            DataAccess.addUser(username, password, email);
-            return 200;
-        } else { //username already exists!
-            return 401; //add an error message to this in the future FIXME
+    public JResponse registerUser(RegistrationRequest req){ //make this return some sort of status, perhaps json
+        if(DataAccess.getUser(req.getUsername())==null){
+            DataAccess.addUser(req.getUsername(), req.getPassword(), req.getEmail());
+            return new JResponse(200, "{\"username\": \""+req.getUsername()+"\"}");//FIXME should return multiple items
+        } else { //username already exists!//works
+            return new JResponse(403, "{\"message\": \"Error: already taken\"}"); //add an error message to this in the future FIXME
         }
     }
 }
