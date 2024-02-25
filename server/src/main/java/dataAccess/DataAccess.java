@@ -3,6 +3,7 @@ package dataAccess;
 import model.*;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class DataAccess {
     private static ArrayList<UserData> userData = new ArrayList<UserData>();
@@ -30,8 +31,11 @@ public class DataAccess {
         return null;
     }
 
-    public static void addUser(String username, String password, String email){
+    public static String addUser(String username, String password, String email){ //returns auth data
         userData.add(new UserData(username, password, email));
+        String token = UUID.randomUUID().toString();
+        authData.add(new AuthData(token, username));
+        return token;
     }
 
 }
