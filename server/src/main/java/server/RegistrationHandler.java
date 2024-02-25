@@ -17,7 +17,7 @@ public class RegistrationHandler extends Handler{
             JResponse result = (new RegistrationService()).registerUser(request);
             res.status(result.getCode());
             res.type("application/json");
-            res.body(result.getMessage());
+            res.body(result.toString());
             return res.body();
         } catch(Exception e){ //cant parse
             res.status(400);

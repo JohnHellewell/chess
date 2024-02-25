@@ -1,17 +1,27 @@
 package server;
 
 import dataAccess.DataAccess;
+import dataAccess.DataAccessException;
 
 public class RegistrationService {
 
     public RegistrationService(){};
 
-    public JResponse registerUser(RegistrationRequest req){ //make this return some sort of status, perhaps json
+    public JResponse registerUser(RegistrationRequest req) throws DataAccessException { //make this return some sort of status, perhaps json
+        //check that the request fields are valid
+        if(req.getUsername()==null||req.getPassword()==null||req.getEmail()==null)
+            throw new DataAccessException("");
+
         if(DataAccess.getUser(req.getUsername())==null){
             String auth = DataAccess.addUser(req.getUsername(), req.getPassword(), req.getEmail());
-            return new JResponse(200, "{\"username\": \""+req.getUsername()+"\", \"authToken\":\"" + auth + "\"}");//FIXME should return multiple items
+            JResponse res = new JResponse(200);
+            res.setUsername(req.getUsername());
+            res.setAuthToken(auth);
+            return res;//FIXME should return multiple items
         } else { //username already exists!//works
-            return new JResponse(403, "{\"message\": \"Error: already taken\"}"); //add an error message to this in the future FIXME
+            JResponse res = new JResponse(403);
+            res.setMessage("Error: already taken");
+            return res; //add an error message to this in the future FIXME
         }
     }
 }
