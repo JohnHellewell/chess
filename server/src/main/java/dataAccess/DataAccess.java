@@ -18,9 +18,9 @@ public class DataAccess {
 
 
     public static void ClearAll(){
-        userData = new ArrayList<UserData>();
-        gameData = new ArrayList<GameData>();
-        authData = new ArrayList<AuthData>();
+        userData.clear();
+        gameData.clear();
+        authData.clear();
     }
 
     public static UserData getUser(String username){
@@ -42,6 +42,15 @@ public class DataAccess {
         String token = generateAuthToken();
         authData.add(new AuthData(token, username));
         return token;
+    }
+
+    public static String getAuth(String username){
+        for(AuthData a : authData){
+            if(a.getUsername().equals(username)){
+                return a.getAuthToken();
+            }
+        }
+        return null;
     }
 
     public static boolean isAuthValid(String authToken){

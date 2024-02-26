@@ -10,28 +10,19 @@ public class ClearHandler extends Handler{
 
     public Object handleReq(Request req, Response res){//FIXME, always returns 200
 
-
+        int code = (new ClearService()).clearAll();
 
         // Set HTTP status code
-        res.status(200);
+        res.status(code);
 
         // Set content type
         res.type("application/json");
 
-        // Create a JSON response
-        //String jsonResponse = "{\"message\": \"success\"}";
 
         // Set the response body
         res.body("{\"message\": \"success\"}");
 
         return res.body();
     }
-    /*
-    LoginRequest request = (LoginRequest)gson.fromJson(reqData, LoginRequest.class);
 
-    LoginService service = new LoginService();
-    LoginResult result = service.login(request);
-
-    return gson.toJson(result);
-     */
 }

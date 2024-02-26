@@ -4,12 +4,24 @@ import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
 
+import java.util.Map;
+import java.util.Set;
+
 public class LogoutHandler extends Handler{
     @Override
     public Object handleReq(Request req, Response res) {
 
         try{
-            LogoutRequest request = (LogoutRequest) gson.fromJson(req.body(), LogoutRequest.class);
+            LogoutRequest request = new LogoutRequest();
+            //request.setAuthToken(req.headers().toString()); //combines all headers into one string, but there should only be one string in the first place
+            //Set<String> heads = req.header("authoriza");
+            //for(String s : heads){
+            //    ;
+            //}
+            
+            
+            
+            request.setAuthToken(req.headers("authorization"));
 
             JResponse result = (new LogoutService()).logoutUser(request);//error here
 

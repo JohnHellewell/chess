@@ -5,7 +5,8 @@ import dataAccess.DataAccess;
 public class ClearService {
     public ClearService(){};
 
-    public void clearAll(){
+    public int clearAll(){
         DataAccess.ClearAll();
+        return 200;
     }
 }

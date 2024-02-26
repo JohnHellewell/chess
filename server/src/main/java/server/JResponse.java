@@ -10,17 +10,20 @@ public class JResponse {
 
     @Override
     public String toString() {
+        if(message==null&&password==null&&username==null&&authToken==null)
+            return "{\"message\": \" success \"}";
+
         String str = "{";
 
         if(message!=null){
             str+= "\"message\": \"" + message + "\",";
         } else {
             if(username!=null)
-                str += "\"username\": \"" + username + "\",";
+                str += "\"username\":\"" + username + "\",";
             if(password!=null)
-                str += "\"password\": \"" + password + "\",";
+                str += "\"password\":\"" + password + "\",";
             if(authToken!=null)
-                str += "\"authToken\": \"" + authToken + "\",";
+                str += "\"authToken\":\"" + authToken + "\",";
         }
         str = str.substring(0, str.length()-1) + "}";//get rid of last comma
 
