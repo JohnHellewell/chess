@@ -17,7 +17,21 @@ public class JoinHandler extends Handler{
             res.body(jResponse.toString());
             return res.body();
         } catch(Exception e){ //bad request
-            return badRequest(res);
+            //try spectate
+            try{
+                SpectateRequest jRequest = (SpectateRequest)gson.fromJson(req.body(), SpectateRequest.class);
+                String auth = req.headers("authorization");
+                JResponse jResponse = (new JoinService()).spectate(auth, jRequest);
+
+                res.status(jResponse.getCode());
+                res.type("applicaiton/json");
+                res.body(jResponse.toString());
+                return res.body();
+
+            } catch(Exception f){
+                return badRequest(res);
+            }
+
         }
     }
 }

@@ -1,7 +1,6 @@
 package model;
 
 import chess.ChessGame;
-
 import java.util.Objects;
 
 public class GameData {
@@ -51,6 +50,8 @@ public class GameData {
         GameData gameData = (GameData) o;
         return gameID == gameData.gameID && Objects.equals(whiteUsername, gameData.whiteUsername) && Objects.equals(blackUsername, gameData.blackUsername) && Objects.equals(gameName, gameData.gameName) && Objects.deepEquals(game, gameData.game);
     }
+
+
 
     @Override
     public int hashCode() {

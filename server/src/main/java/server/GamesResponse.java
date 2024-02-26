@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class GamesResponse {
 
-    public ArrayList<GameData> games = new ArrayList<GameData>();
+    public ArrayList<GameData> games;
 
     public GamesResponse(ArrayList<GameData> games){
         this.games = games;
@@ -21,13 +21,13 @@ public class GamesResponse {
             String temp = "{";
             temp += "\"gameID\":" + game.getGameID() + ", ";
             if(game.getWhiteUsername()==null||game.getWhiteUsername().equals("")){
-                temp += "\"whiteUsername\": \"null\", ";
+                temp += "\"whiteUsername\": null, ";
             } else {
                 temp += "\"whiteUsername\": " + game.getWhiteUsername() +", ";
             }
 
             if(game.getBlackUsername()==null||game.getBlackUsername().equals("")){
-                temp += "\"blackUsername\": \"null\", ";
+                temp += "\"blackUsername\": null, ";
             } else {
                 temp += "\"blackUsername\": " + game.getBlackUsername() +", ";
             }

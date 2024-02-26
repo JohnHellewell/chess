@@ -81,7 +81,7 @@ public class DataAccess {
 
     public static int createGame(String gameName){ //don't worry about checking for duplicates just yet
         int gameID = generateGameID(gameName);
-        gameData.add(new GameData(gameID, "", "", gameName, new ChessGame()));
+        gameData.addLast(new GameData(gameID, "", "", gameName, new ChessGame()));
         return gameID;
     }
 
