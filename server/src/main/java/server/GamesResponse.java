@@ -20,23 +20,25 @@ public class GamesResponse {
         for(GameData game : games){
             String temp = "{";
             temp += "\"gameID\":" + game.getGameID() + ", ";
-            if(game.getWhiteUsername()==null){
-                temp += "\"whiteUsername\": \"\", ";
+            if(game.getWhiteUsername()==null||game.getWhiteUsername().equals("")){
+                temp += "\"whiteUsername\": \"null\", ";
             } else {
                 temp += "\"whiteUsername\": " + game.getWhiteUsername() +", ";
             }
 
-            if(game.getBlackUsername()==null){
-                temp += "\"blackUsername\": \"\", ";
+            if(game.getBlackUsername()==null||game.getBlackUsername().equals("")){
+                temp += "\"blackUsername\": \"null\", ";
             } else {
                 temp += "\"blackUsername\": " + game.getBlackUsername() +", ";
             }
 
             temp += "\"gameName\": \"" + game.getGameName() + "\"";
 
-            temp += "}";
+            temp += "},";
             str += temp;
         }
+        if(!games.isEmpty())
+            str = str.substring(0,str.length()-1);//remove last comma
 
         str += "] }";
         return str;

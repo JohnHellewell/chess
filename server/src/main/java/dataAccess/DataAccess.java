@@ -89,4 +89,22 @@ public class DataAccess {
         return Math.abs(name.hashCode()%10000); //generates a 4-digit gameID based on the name. I figured this was better than random()
     }
 
+    public static GameData getGame(int gameID){
+        for(GameData game : gameData){
+            if(game.getGameID()==gameID){
+                return game;
+            }
+        }
+        return null;
+    }
+
+    public static String findUser(String authToken){
+        for(AuthData a : authData){
+            if(a.getAuthToken().equals(authToken)){
+                return a.getUsername();
+            }
+        }
+        return null;
+    }
+
 }
