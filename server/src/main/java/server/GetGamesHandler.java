@@ -1,7 +1,10 @@
 package server;
 
+import model.GameData;
 import spark.Request;
 import spark.Response;
+
+import java.util.ArrayList;
 
 public class GetGamesHandler extends Handler{
 
@@ -14,7 +17,7 @@ public class GetGamesHandler extends Handler{
                 throw new RuntimeException();
             }
             //has token
-            String games = (new GetGamesService()).getGames(auth);
+            String games = (new GetGamesService()).getGames(auth).toString();
 
             res.status(200);
             res.type("application/json");

@@ -74,4 +74,8 @@ public class DataAccess {
         }
     }
 
+    public static ArrayList<GameData> getGames(){
+        return gameData;
+    }
+
 }
