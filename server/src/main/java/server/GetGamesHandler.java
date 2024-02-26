@@ -21,7 +21,8 @@ public class GetGamesHandler extends Handler{
 
             res.status(200);
             res.type("application/json");
-            res.body(games);
+            //res.body(games);
+            res.body("{\"games\": []}");//TEST
             return res.body();
 
         } catch(Exception e){

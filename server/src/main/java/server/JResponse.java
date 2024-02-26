@@ -1,16 +1,17 @@
 package server;
 
 public class JResponse {
-    public int code;
+    public int code, gameID;
     public String message, password, username, authToken;
 
     public JResponse(int code){
         this.code = code;
+        gameID = 0;
     }
 
     @Override
     public String toString() {
-        if(message==null&&password==null&&username==null&&authToken==null)
+        if(message==null&&password==null&&username==null&&authToken==null&&gameID==0)
             return "{\"message\": \" success \"}";
 
         String str = "{";
@@ -24,10 +25,21 @@ public class JResponse {
                 str += "\"password\":\"" + password + "\",";
             if(authToken!=null)
                 str += "\"authToken\":\"" + authToken + "\",";
+            if(gameID != 0){
+                str += "\"gameID\":" + gameID + ",";
+            }
         }
         str = str.substring(0, str.length()-1) + "}";//get rid of last comma
 
         return str;
+    }
+
+    public int getGameID() {
+        return gameID;
+    }
+
+    public void setGameID(int gameID) {
+        this.gameID = gameID;
     }
 
     public int getCode() {

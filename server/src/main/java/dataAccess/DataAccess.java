@@ -1,5 +1,6 @@
 package dataAccess;
 
+import chess.ChessGame;
 import model.*;
 
 import java.util.ArrayList;
@@ -76,6 +77,16 @@ public class DataAccess {
 
     public static ArrayList<GameData> getGames(){
         return gameData;
+    }
+
+    public static int createGame(String gameName){ //don't worry about checking for duplicates just yet
+        int gameID = generateGameID(gameName);
+        gameData.add(new GameData(gameID, "", "", gameName, new ChessGame()));
+        return gameID;
+    }
+
+    private static int generateGameID(String name){
+        return Math.abs(name.hashCode()%10000); //generates a 4-digit gameID based on the name. I figured this was better than random()
     }
 
 }

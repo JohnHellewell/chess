@@ -29,7 +29,7 @@ public class Server {
         Spark.get("/game", (request, response) -> (new GetGamesHandler()).handleReq(request, response));
 
         //Create Game
-        Spark.post("/game", (request, response) -> { return getDefaultRes(response); });
+        Spark.post("/game", (request, response) -> (new CreateGameHandler().handleReq(request, response)));
 
         //Join Game
         Spark.put("/game", (request, response) -> { return getDefaultRes(response); });
