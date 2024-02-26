@@ -44,6 +44,14 @@ public class DataAccess {
         return token;
     }
 
+    public static boolean isAuthValid(String authToken){
+        for(AuthData a : authData){
+            if(a.getAuthToken().equals(authToken))
+                return true;
+        }
+        return false;
+    }
+
     private static String generateAuthToken(){
         return UUID.randomUUID().toString();
     }

@@ -19,10 +19,10 @@ public class ClearHandler extends Handler{
         res.type("application/json");
 
         // Create a JSON response
-        String jsonResponse = "{\"message\": \"success\"}";
+        //String jsonResponse = "{\"message\": \"success\"}";
 
         // Set the response body
-        res.body(jsonResponse);
+        res.body("{\"message\": \"success\"}");
 
         return res.body();
     }

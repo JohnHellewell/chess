@@ -9,7 +9,6 @@ public class RegistrationHandler extends Handler{
     public RegistrationHandler(){};
 
     public Object handleReq(Request req, Response res){
-        Gson gson = new Gson();
 
         try{
             RegistrationRequest request = (RegistrationRequest)gson.fromJson(req.body(), RegistrationRequest.class);
