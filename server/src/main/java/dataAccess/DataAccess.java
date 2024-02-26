@@ -65,4 +65,13 @@ public class DataAccess {
         return UUID.randomUUID().toString();
     }
 
+    public static void logout(String authToken){
+        for(AuthData a : authData){
+            if(a.getAuthToken().equals(authToken)){
+                authData.remove(a);
+                break;
+            }
+        }
+    }
+
 }

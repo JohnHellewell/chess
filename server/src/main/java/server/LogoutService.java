@@ -25,6 +25,8 @@ public class LogoutService {
 
         //check for valid auth
         if (DataAccess.isAuthValid(req.getAuthToken())) {
+            //logout lol
+            DataAccess.logout(req.getAuthToken());
             JResponse res = new JResponse(200);
             return res;
         } else { //invalid response
