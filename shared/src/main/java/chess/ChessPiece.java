@@ -90,10 +90,7 @@ public class ChessPiece {
 
         if(isValidMove(temp, board)==0) {
             if(forward*pos.getRow()==-2||forward*pos.getRow()==7){ //promotion move
-                moves.add(new ChessMove(pos, temp, PieceType.KNIGHT));
-                moves.add(new ChessMove(pos, temp, PieceType.ROOK));
-                moves.add(new ChessMove(pos, temp, PieceType.BISHOP));
-                moves.add(new ChessMove(pos, temp, PieceType.QUEEN));
+                addPromoMoves(moves, pos, temp);
             }
             else
                 moves.add(new ChessMove(pos, temp, null)); //non-promotion move
@@ -109,16 +106,20 @@ public class ChessPiece {
             temp = new ChessPosition(pos.getRow()+forward, pos.getColumn() + i);
             if (isValidMove(temp, board) == 1) { //capture
                 if (forward * pos.getRow() == -2 || forward * pos.getRow() == 7) { //promotion move
-                    moves.add(new ChessMove(pos, temp, PieceType.KNIGHT));
-                    moves.add(new ChessMove(pos, temp, PieceType.ROOK));
-                    moves.add(new ChessMove(pos, temp, PieceType.BISHOP));
-                    moves.add(new ChessMove(pos, temp, PieceType.QUEEN));
+                    addPromoMoves(moves, pos, temp);
                 }
                 else
                     moves.add(new ChessMove(pos, temp, null)); //non-promotion move
             }
         }
         return moves;
+    }
+
+    private void addPromoMoves(ArrayList<ChessMove> moves,ChessPosition pos, ChessPosition temp){
+        moves.add(new ChessMove(pos, temp, PieceType.KNIGHT));
+        moves.add(new ChessMove(pos, temp, PieceType.ROOK));
+        moves.add(new ChessMove(pos, temp, PieceType.BISHOP));
+        moves.add(new ChessMove(pos, temp, PieceType.QUEEN));
     }
 
     private ArrayList<ChessMove> getKingMoves(ChessBoard board, ChessPosition pos){
