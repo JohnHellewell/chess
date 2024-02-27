@@ -1,5 +1,6 @@
 package server;
 
+import Handlers.*;
 import spark.*;
 
 public class Server {
@@ -36,13 +37,6 @@ public class Server {
 
         Spark.awaitInitialization();
         return Spark.port();
-    }
-
-    private String getDefaultRes(Response response){ //for testng only; placeholder
-        response.status(200);
-        response.type("application/json");
-        response.body("{\"message\":\"success\"}");
-        return response.body();
     }
 
     public void stop() {

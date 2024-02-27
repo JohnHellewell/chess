@@ -1,9 +1,6 @@
-package server;
-import model.GameData;
+package Services;
 import dataAccess.DataAccess;
-
-
-import javax.xml.crypto.Data;
+import Responses.JResponse;
 
 public class Service {
 

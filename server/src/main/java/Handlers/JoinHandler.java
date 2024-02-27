@@ -1,5 +1,9 @@
-package server;
+package Handlers;
 
+import Responses.JResponse;
+import Requests.JoinRequest;
+import Services.JoinService;
+import Requests.SpectateRequest;
 import spark.Request;
 import spark.Response;
 

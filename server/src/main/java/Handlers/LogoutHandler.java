@@ -1,11 +1,10 @@
-package server;
+package Handlers;
 
-import com.google.gson.Gson;
+import Responses.JResponse;
+import Requests.LogoutRequest;
+import Services.LogoutService;
 import spark.Request;
 import spark.Response;
-
-import java.util.Map;
-import java.util.Set;
 
 public class LogoutHandler extends Handler{
     @Override
@@ -13,14 +12,7 @@ public class LogoutHandler extends Handler{
 
         try{
             LogoutRequest request = new LogoutRequest();
-            //request.setAuthToken(req.headers().toString()); //combines all headers into one string, but there should only be one string in the first place
-            //Set<String> heads = req.header("authoriza");
-            //for(String s : heads){
-            //    ;
-            //}
-            
-            
-            
+
             request.setAuthToken(req.headers("authorization"));
 
             JResponse result = (new LogoutService()).logoutUser(request);//error here

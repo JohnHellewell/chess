@@ -1,10 +1,8 @@
-package server;
+package Handlers;
 
-import model.GameData;
+import Services.GetGamesService;
 import spark.Request;
 import spark.Response;
-
-import java.util.ArrayList;
 
 public class GetGamesHandler extends Handler{
 

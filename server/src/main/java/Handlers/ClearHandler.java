@@ -1,6 +1,6 @@
-package server;
+package Handlers;
 
-import com.google.gson.Gson;
+import Services.ClearService;
 import spark.Request;
 import spark.Response;
 
@@ -8,7 +8,7 @@ public class ClearHandler extends Handler{
 
     public ClearHandler(){};
 
-    public Object handleReq(Request req, Response res){//FIXME, always returns 200
+    public Object handleReq(Request req, Response res){
 
         int code = (new ClearService()).clearAll();
 

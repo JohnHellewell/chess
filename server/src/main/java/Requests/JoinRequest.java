@@ -1,4 +1,4 @@
-package server;
+package Requests;
 
 public class JoinRequest {
     String playerColor;

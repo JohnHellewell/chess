@@ -1,8 +1,11 @@
-package server;
+package Services;
 
+import Requests.JoinRequest;
+import Requests.SpectateRequest;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import model.GameData;
+import Responses.JResponse;
 
 public class JoinService extends Service{
 

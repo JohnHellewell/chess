@@ -1,4 +1,4 @@
-package server;
+package Responses;
 
 public class JResponse {
     public int code, gameID;
@@ -60,10 +60,6 @@ public class JResponse {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setUsername(String username) {

@@ -1,6 +1,8 @@
-package server;
+package Handlers;
 
-import com.google.gson.Gson;
+import Responses.JResponse;
+import Requests.LoginRequest;
+import Services.LoginService;
 import spark.Request;
 import spark.Response;
 

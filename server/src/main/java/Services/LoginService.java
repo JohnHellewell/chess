@@ -1,10 +1,10 @@
-package server;
+package Services;
 
+import Requests.LoginRequest;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import model.UserData;
-
-import javax.xml.crypto.Data;
+import Responses.JResponse;
 
 public class LoginService {
 

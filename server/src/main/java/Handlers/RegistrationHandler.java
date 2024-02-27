@@ -1,7 +1,8 @@
-package server;
+package Handlers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import Responses.JResponse;
+import Requests.RegistrationRequest;
+import Services.RegistrationService;
 import spark.*;
 
 public class RegistrationHandler extends Handler{

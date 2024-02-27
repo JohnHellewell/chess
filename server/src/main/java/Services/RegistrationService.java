@@ -1,8 +1,9 @@
-package server;
+package Services;
 
+import Requests.RegistrationRequest;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
-import model.UserData;
+import Responses.JResponse;
 
 public class RegistrationService {
 
@@ -22,22 +23,6 @@ public class RegistrationService {
         } else { //username already exists!//works
             JResponse res = new JResponse(403);
             res.setMessage("Error: already taken");
-            /*
-            //TEST
-            //check if password is correct
-            UserData u = DataAccess.getUser(req.getUsername());
-            if(u!=null && u.getPassword().equals(req.getPassword())){
-
-
-                String auth = DataAccess.getAuth(req.getUsername());
-                if(auth==null){
-                    //login
-                    auth = DataAccess.login(req.getUsername());
-                }
-                res.setAuthToken(auth);
-            }
-            */
-
 
             return res;
         }

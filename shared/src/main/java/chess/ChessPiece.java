@@ -152,10 +152,10 @@ public class ChessPiece {
     private ArrayList<ChessMove> getBishopMoves(ChessBoard board, ChessPosition pos){
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         for(int i=0; i<4; i++){
-            int x_inc = i%2*2-1; //-1, 1, -1, 1
-            int y_inc = i/2*2-1; //-1, -1, 1, 1
+            int xInc = i%2*2-1; //-1, 1, -1, 1
+            int yInc = i/2*2-1; //-1, -1, 1, 1
             for(int j=1; j<=8; j++){
-                ChessPosition test = new ChessPosition(pos.getRow()+x_inc*j, pos.getColumn()+y_inc*j);
+                ChessPosition test = new ChessPosition(pos.getRow()+xInc*j, pos.getColumn()+yInc*j);
                 int valid = isValidMove(test, board);
                 if(valid == -1)
                     break;
@@ -173,10 +173,10 @@ public class ChessPiece {
     private ArrayList<ChessMove> getRookMoves(ChessBoard board, ChessPosition pos){
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         for(int i=0; i<4; i++){
-            int x_inc = i/2 * (i%2*2-1); //0, 0, -1, 1
-            int y_inc = (3-i)/2 * (i%2*2-1); //1, -1, 0, 0
+            int xInc = i/2 * (i%2*2-1); //0, 0, -1, 1
+            int yInc = (3-i)/2 * (i%2*2-1); //1, -1, 0, 0
             for(int j=1; j<=8; j++){
-                ChessPosition test = new ChessPosition(pos.getRow()+x_inc*j, pos.getColumn()+y_inc*j);
+                ChessPosition test = new ChessPosition(pos.getRow()+xInc*j, pos.getColumn()+yInc*j);
                 int valid = isValidMove(test, board);
                 if(valid == -1)
                     break;
