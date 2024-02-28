@@ -18,5 +18,6 @@ public class GetGamesService {
         }
         else
             throw new DataAccessException("");
+
     }
 }

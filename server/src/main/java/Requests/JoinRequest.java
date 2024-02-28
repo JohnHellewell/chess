@@ -1,8 +1,8 @@
 package Requests;
 
 public class JoinRequest {
-    String playerColor;
-    int gameID;
+    public String playerColor;
+    public int gameID;
 
     public String getPlayerColor() {
         return playerColor;
