@@ -1,20 +1,19 @@
 package dataAccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class DataAccess {
-    private static ArrayList<UserData> userData = new ArrayList<UserData>();
-    private static ArrayList<GameData> gameData = new ArrayList<GameData>();
-    private static ArrayList<AuthData> authData = new ArrayList<AuthData>();
+
     public DataAccess(){
         try {
             DatabaseManager.createDatabase();
         } catch(Exception e){
-            //nothing..?
             System.out.println(e.getMessage());
         }
     };
@@ -29,37 +28,11 @@ public class DataAccess {
         }
     }
 
-    private static String querySQL(String code){
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(code)) {
-                var rs = preparedStatement.executeQuery();
-                rs.next();
-                return rs.getString(0);
-            }
-        } catch (Exception e){
-                return "";
-        }
-    }
-
-    /*
-    public void example() throws Exception {
-       try (var conn = DatabaseManager.getConnection()) {
-          try (var preparedStatement = conn.prepareStatement("SELECT 1+1")) {
-             var rs = preparedStatement.executeQuery();
-             rs.next();
-             System.out.println(rs.getInt(1));
-          }
-       }
-    }
-     */
-
     public static void clearAll(){
         runSQL("DELETE FROM userdata");
         runSQL("DELETE FROM authdata");
         runSQL("DELETE FROM gamedata");
     }
-
-
 
     public static UserData getUser(String username){
         try (var conn = DatabaseManager.getConnection()) {
@@ -163,22 +136,52 @@ public class DataAccess {
     }
 
     public static void logout(String authToken){
-        for(AuthData a : authData){
-            if(a.getAuthToken().equals(authToken)){
-                authData.remove(a);
-                break;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("REMOVE FROM authdata WHERE authtoken=?")) {
+                preparedStatement.setString(1, authToken);
+
+                preparedStatement.executeUpdate();
             }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
         }
     }
 
-    public static ArrayList<GameData> getGames(){
-        return gameData;
+    public static ArrayList<GameData> getGames(){ //call getGame
+        ArrayList<GameData> temp = new ArrayList<GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT gameid FROM gamedata")) {
+                try(var result = preparedStatement.executeQuery()){
+                    while(result.next()){
+                        temp.add(getGame(result.getInt("gameid")));
+                    }
+                    return temp;
+                }
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public static int createGame(String gameName){ //don't worry about checking for duplicates just yet
         int gameID = generateGameID(gameName);
-        gameData.addLast(new GameData(gameID, "", "", gameName, new ChessGame()));
-        return gameID;
+        String newGame = gameToString(new ChessGame());
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO gamedata (gameid, whiteusername, blackusername, gamename, game) " +
+                    "VALUES(?, ?, ?, ?, ?)")) {
+                preparedStatement.setInt(1, gameID);
+                preparedStatement.setString(4, gameName);
+                preparedStatement.setString(5, newGame);
+
+                preparedStatement.executeUpdate();
+
+                return gameID;
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return -1;
+        }
     }
 
     private static int generateGameID(String name){
@@ -186,21 +189,52 @@ public class DataAccess {
     }
 
     public static GameData getGame(int gameID){
-        for(GameData game : gameData){
-            if(game.getGameID()==gameID){
-                return game;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata WHERE gameid=?")) {
+                preparedStatement.setInt(1, gameID);
+
+                try(var result = preparedStatement.executeQuery()){
+                    result.next();
+                    return new GameData(gameID,
+                            result.getString("whiteusername"),
+                            result.getString("blackusername"),
+                            result.getString("gamename"),
+                            stringToGame(result.getString("game")));
+                }
             }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
-        return null;
     }
 
+    private static ChessGame stringToGame(String str){
+        var serializer = new Gson();
+        return serializer.fromJson(str, ChessGame.class);
+    }
+
+    private static String gameToString(ChessGame game){
+        var serializer = new Gson();
+        return serializer.toJson(game);
+    }
+
+
     public static String findUser(String authToken){
-        for(AuthData a : authData){
-            if(a.getAuthToken().equals(authToken)){
-                return a.getUsername();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT username FROM authdata WHERE authtoken=?")) {
+                preparedStatement.setString(1, authToken);
+
+                try(var result = preparedStatement.executeQuery()){
+                    while(result.next()){ //if something is returned, return true
+                        return result.getString("username");
+                    }
+                    return null;
+                }
             }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
-        return null;
     }
 
 }
