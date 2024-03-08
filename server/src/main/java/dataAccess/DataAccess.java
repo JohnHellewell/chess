@@ -15,6 +15,7 @@ public class DataAccess {
             DatabaseManager.createDatabase();
         } catch(Exception e){
             //nothing..?
+            System.out.println(e.getMessage());
         }
     };
 
@@ -24,7 +25,7 @@ public class DataAccess {
                 preparedStatement.executeUpdate();
             }
         } catch (Exception e){
-
+            System.out.println("Error running code: " + e.getMessage());
         }
     }
 
@@ -33,7 +34,7 @@ public class DataAccess {
             try (var preparedStatement = conn.prepareStatement(code)) {
                 var rs = preparedStatement.executeQuery();
                 rs.next();
-                return rs.getString(1);
+                return rs.getString(0);
             }
         } catch (Exception e){
                 return "";
@@ -54,10 +55,8 @@ public class DataAccess {
 
     public static void clearAll(){
         runSQL("DELETE FROM userdata");
-
-        //userData.clear();
-        //gameData.clear();
-        //authData.clear();
+        runSQL("DELETE FROM authdata");
+        runSQL("DELETE FROM gamedata");
     }
 
 
@@ -77,15 +76,12 @@ public class DataAccess {
     }
 
     public static String addUser(String username, String password, String email){ //returns auth data
-        /*
-        userData.add(new UserData(username, password, email));
-        String token = generateAuthToken();
-        authData.add(new AuthData(token, username));
-        return token;
-        */
-        String authToken = querySQL("INSERT into userdata(\"" + username + "\", \"" + password + "\", \"" + email + "\")");
+        runSQL("INSERT into userdata(\"" + username + "\", \"" + password + "\", \"" + email + "\")");
+
+
+        String authToken = generateAuthToken();
+        runSQL("INSERT into authdata(\"" + authToken + "\", \"" + username +")");
         return authToken;
-        //not sure how to get string
     }
 
     public static boolean isAuthValid(String authToken){
