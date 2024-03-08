@@ -76,9 +76,18 @@ public class DataAccess {
     }
 
     public static String addUser(String username, String password, String email){ //returns auth data
-
-
         try (var conn = DatabaseManager.getConnection()) {
+            //check that the username is not already taken
+            try (var preparedStatement = conn.prepareStatement("SELECT username FROM userdata WHERE username=?")){
+                preparedStatement.setString(1, username);
+                try(var result = preparedStatement.executeQuery()){
+                    while(result.next()){ //there should be no results
+                        throw new DataAccessException("Username already taken!");
+                    }
+                }
+            }
+
+            //add user to userData
             try (var preparedStatement = conn.prepareStatement("INSERT INTO userdata (username, password, email) VALUES(?, ?, ?)")) {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password);
@@ -88,7 +97,7 @@ public class DataAccess {
             }
 
             String authToken = generateAuthToken();
-
+            //add user & new authToken to authData
             try (var preparedStatement = conn.prepareStatement("INSERT INTO authdata (authtoken, username) VALUES(?, ?)")) {
                 preparedStatement.setString(1, authToken);
                 preparedStatement.setString(2, username);
@@ -104,11 +113,21 @@ public class DataAccess {
     }
 
     public static boolean isAuthValid(String authToken){
-        for(AuthData a : authData){
-            if(a.getAuthToken().equals(authToken))
-                return true;
+
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT username FROM authdata WHERE authtoken=?")){
+                preparedStatement.setString(1, authToken);
+                try(var result = preparedStatement.executeQuery()){
+                    while(result.next()){ //if something is returned, return true
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            return false;
         }
-        return false;
     }
 
     private static String generateAuthToken(){
