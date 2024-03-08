@@ -1,8 +1,8 @@
 package Services;
 
 import Requests.CreateGameRequest;
-import dataAccess.DataAccess;
-import dataAccess.DataAccessException;
+import dataAccessTests.DataAccess;
+import dataAccessTests.DataAccessException;
 import Responses.JResponse;
 
 public class CreateGameService extends Service{

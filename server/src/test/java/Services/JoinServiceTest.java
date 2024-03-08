@@ -1,7 +1,7 @@
 package Services;
 
 import Requests.JoinRequest;
-import dataAccess.DataAccess;
+import dataAccessTests.DataAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

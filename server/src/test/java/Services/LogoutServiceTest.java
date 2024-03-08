@@ -1,13 +1,9 @@
 package Services;
 
 import Requests.LogoutRequest;
-import dataAccess.DataAccess;
+import dataAccessTests.DataAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import javax.xml.crypto.Data;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class LogoutServiceTest {
     @Test

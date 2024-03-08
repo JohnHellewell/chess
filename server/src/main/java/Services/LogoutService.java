@@ -1,8 +1,8 @@
 package Services;
 
 import Requests.LogoutRequest;
-import dataAccess.DataAccess;
-import dataAccess.DataAccessException;
+import dataAccessTests.DataAccess;
+import dataAccessTests.DataAccessException;
 import Responses.JResponse;
 
 public class LogoutService {

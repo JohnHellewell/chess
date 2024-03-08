@@ -2,8 +2,8 @@ package Services;
 
 import Requests.JoinRequest;
 import Requests.SpectateRequest;
-import dataAccess.DataAccess;
-import dataAccess.DataAccessException;
+import dataAccessTests.DataAccess;
+import dataAccessTests.DataAccessException;
 import model.GameData;
 import Responses.JResponse;
 
