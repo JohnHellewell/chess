@@ -170,6 +170,8 @@ public class DataAccess {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO gamedata (gameid, whiteusername, blackusername, gamename, game) " +
                     "VALUES(?, ?, ?, ?, ?)")) {
                 preparedStatement.setInt(1, gameID);
+                preparedStatement.setString(2, "");
+                preparedStatement.setString(3, "");
                 preparedStatement.setString(4, gameName);
                 preparedStatement.setString(5, newGame);
 
@@ -193,12 +195,14 @@ public class DataAccess {
                 preparedStatement.setInt(1, gameID);
 
                 try(var result = preparedStatement.executeQuery()){
-                    result.next();
-                    return new GameData(gameID,
-                            result.getString("whiteusername"),
-                            result.getString("blackusername"),
-                            result.getString("gamename"),
-                            stringToGame(result.getString("game")));
+                    if(result.next()) {
+                        return new GameData(gameID,
+                                result.getString("whiteusername"),
+                                result.getString("blackusername"),
+                                result.getString("gamename"),
+                                stringToGame(result.getString("game")));
+                    } else
+                        return null;
                 }
             }
         }catch(Exception e){
