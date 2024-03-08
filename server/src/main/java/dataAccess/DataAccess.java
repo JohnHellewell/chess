@@ -68,6 +68,18 @@ public class DataAccess {
         createIfNeeded();
         String token = generateAuthToken();
         try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT authtoken FROM authdata WHERE username=?")) {
+                preparedStatement.setString(1, username);
+                try(var result = preparedStatement.executeQuery()){
+                    if(result.next()){ //user already logged in
+                        return result.getString("authtoken");
+                    } //else carry on
+                }
+            }
+        }catch(Exception e){
+            return null;
+        }
+        try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO authdata (authtoken, username) VALUES(?, ?)")) {
                 preparedStatement.setString(1, token);
                 preparedStatement.setString(2, username);
@@ -154,14 +166,31 @@ public class DataAccess {
         }
     }
 
-    public static ArrayList<GameData> getGames(){ //call getGame
+    public static ArrayList<GameData> getGames(){
         createIfNeeded();
         ArrayList<GameData> temp = new ArrayList<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT gameid FROM gamedata")) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata")) {
                 try(var result = preparedStatement.executeQuery()){
                     while(result.next()){
-                        temp.add(getGame(result.getInt("gameid")));
+                        //temp.add(getGame(result.getInt("gameid")));
+                        int id = result.getInt("gameid");
+                        String white, black;
+                        try{
+                            white = result.getString("whiteusername");
+                        } catch(Exception e){
+                            white = "";
+                        }
+                        try{
+                            black = result.getString("blackusername");
+                        } catch(Exception e){
+                            black = "";
+                        }
+                        String name = result.getString("gamename");
+                        ChessGame g = stringToGame(result.getString("game"));
+                        GameData gd = new GameData(id, white, black, name, g);
+
+                        temp.add(gd);
                     }
                     return temp;
                 }
