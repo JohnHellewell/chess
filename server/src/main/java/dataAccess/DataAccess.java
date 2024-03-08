@@ -76,12 +76,31 @@ public class DataAccess {
     }
 
     public static String addUser(String username, String password, String email){ //returns auth data
-        runSQL("INSERT into userdata(\"" + username + "\", \"" + password + "\", \"" + email + "\")");
 
 
-        String authToken = generateAuthToken();
-        runSQL("INSERT into authdata(\"" + authToken + "\", \"" + username +")");
-        return authToken;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO userdata (username, password, email) VALUES(?, ?, ?)")) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, password);
+                preparedStatement.setString(3, email);
+
+                preparedStatement.executeUpdate();
+            }
+
+            String authToken = generateAuthToken();
+
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO authdata (authtoken, username) VALUES(?, ?)")) {
+                preparedStatement.setString(1, authToken);
+                preparedStatement.setString(2, username);
+
+                preparedStatement.executeUpdate();
+            }
+
+            return authToken;
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public static boolean isAuthValid(String authToken){
