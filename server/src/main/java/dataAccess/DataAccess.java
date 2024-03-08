@@ -62,16 +62,45 @@ public class DataAccess {
 
 
     public static UserData getUser(String username){
-        for(UserData u : userData){
-            if(u.getUsername().equals(username))
-                return u;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM userdata WHERE username=?")) {
+                preparedStatement.setString(1, username);
+                try(var result = preparedStatement.executeQuery()){
+                    while(result.next()) {
+                        String user = result.getString("username");
+                        String pass = result.getString("password");
+                        String email = result.getString("email");
+
+                        if (user != null && pass != null && email != null) {
+                            return new UserData(user, pass, email);
+                        } else {
+                            return null;
+                        }
+                    }
+                    return null;
+                }
+            }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
-        return null;
+
+
     }
 
     public static String login(String username){
         String token = generateAuthToken();
-        authData.add(new AuthData(token, username));
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO authdata (authtoken, username) VALUES(?, ?)")) {
+                preparedStatement.setString(1, token);
+                preparedStatement.setString(2, username);
+
+                preparedStatement.executeUpdate();
+            }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
         return token;
     }
 
@@ -112,8 +141,7 @@ public class DataAccess {
         }
     }
 
-    public static boolean isAuthValid(String authToken){
-
+    public static boolean isAuthValid(String authToken){ //done
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT username FROM authdata WHERE authtoken=?")){
                 preparedStatement.setString(1, authToken);

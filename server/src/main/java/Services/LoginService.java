@@ -26,7 +26,7 @@ public class LoginService {
                 JResponse res = new JResponse(401);
                 res.setMessage("Error: unauthorized");
                 return res;
-            } else { //correct password
+            } else { //correct password 
                 String token = DataAccess.login(req.getUsername());
                 JResponse res = new JResponse(200);
                 res.setUsername(req.getUsername());
