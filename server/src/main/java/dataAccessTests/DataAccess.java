@@ -136,7 +136,7 @@ public class DataAccess {
 
     public static void logout(String authToken){
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("REMOVE FROM authdata WHERE authtoken=?")) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM authdata WHERE authtoken=?")) {
                 preparedStatement.setString(1, authToken);
 
                 preparedStatement.executeUpdate();
