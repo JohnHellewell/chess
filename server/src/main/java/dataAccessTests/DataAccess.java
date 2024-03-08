@@ -185,6 +185,29 @@ public class DataAccess {
         }
     }
 
+    public static void updateGame(int gameID, GameData game){
+        String json = gameToString(game.getGame());
+        //delete and replace game with matching ID
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM gamedata WHERE gameid=?")) {
+                preparedStatement.setInt(1, gameID);
+                preparedStatement.executeUpdate();
+            }
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO gamedata (gameid, whiteusername, blackusername, gamename, game) " +
+                    "VALUES(?, ?, ?, ?, ?)")) {
+                preparedStatement.setInt(1, gameID);
+                preparedStatement.setString(2, game.getWhiteUsername());
+                preparedStatement.setString(3, game.getBlackUsername());
+                preparedStatement.setString(4, game.getGameName());
+                preparedStatement.setString(5, json);
+
+                preparedStatement.executeUpdate();
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
     private static int generateGameID(String name){
         return Math.abs(name.hashCode()%10000); //generates a 4-digit gameID based on the name. I figured this was better than random()
     }

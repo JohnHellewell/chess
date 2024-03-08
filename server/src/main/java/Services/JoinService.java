@@ -27,6 +27,7 @@ public class JoinService extends Service{
             if(req.getPlayerColor().equals("BLACK")){ //black
                 if(game.getBlackUsername().equals("")||game.getBlackUsername().equals(DataAccess.findUser(authToken))){ //spot open
                     game.setBlackUsername(DataAccess.findUser(authToken));
+                    DataAccess.updateGame(game.getGameID(), game);
                     return success();
                 } else {
                     return playerTaken();
@@ -34,6 +35,7 @@ public class JoinService extends Service{
             } else { //white
                 if(game.getWhiteUsername().equals("")||game.getWhiteUsername().equals(DataAccess.findUser(authToken))){ //spot open
                     game.setWhiteUsername(DataAccess.findUser(authToken));
+                    DataAccess.updateGame(game.getGameID(), game);
                     return success();
                 } else {
                     return playerTaken();
