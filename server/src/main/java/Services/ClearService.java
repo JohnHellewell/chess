@@ -1,6 +1,6 @@
 package Services;
 
-import dataAccessTests.DataAccess;
+import dataAccess.DataAccess;
 
 public class ClearService {
     public ClearService(){};

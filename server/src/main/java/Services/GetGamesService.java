@@ -1,7 +1,7 @@
 package Services;
 
-import dataAccessTests.DataAccess;
-import dataAccessTests.DataAccessException;
+import dataAccess.DataAccess;
+import dataAccess.DataAccessException;
 import model.GameData;
 import Responses.GamesResponse;
 

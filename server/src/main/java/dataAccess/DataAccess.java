@@ -1,4 +1,4 @@
-package dataAccessTests;
+package dataAccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
@@ -9,13 +9,15 @@ import java.util.UUID;
 
 public class DataAccess {
 
-    public DataAccess(){
+
+
+    private static void createIfNeeded(){
         try {
             DatabaseManager.createDatabase();
         } catch(Exception e){
             System.out.println(e.getMessage());
         }
-    };
+    }
 
     private static void runSQL(String code){
         try (var conn = DatabaseManager.getConnection()) {
@@ -28,12 +30,14 @@ public class DataAccess {
     }
 
     public static void clearAll(){
+        createIfNeeded();
         runSQL("DELETE FROM userdata");
         runSQL("DELETE FROM authdata");
         runSQL("DELETE FROM gamedata");
     }
 
     public static UserData getUser(String username){
+        createIfNeeded();
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM userdata WHERE username=?")) {
                 preparedStatement.setString(1, username);
@@ -61,6 +65,7 @@ public class DataAccess {
     }
 
     public static String login(String username){
+        createIfNeeded();
         String token = generateAuthToken();
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO authdata (authtoken, username) VALUES(?, ?)")) {
@@ -77,6 +82,7 @@ public class DataAccess {
     }
 
     public static String addUser(String username, String password, String email){ //returns auth data
+        createIfNeeded();
         try (var conn = DatabaseManager.getConnection()) {
             //check that the username is not already taken
             try (var preparedStatement = conn.prepareStatement("SELECT username FROM userdata WHERE username=?")){
@@ -114,6 +120,7 @@ public class DataAccess {
     }
 
     public static boolean isAuthValid(String authToken){ //done
+        createIfNeeded();
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT username FROM authdata WHERE authtoken=?")){
                 preparedStatement.setString(1, authToken);
@@ -135,6 +142,7 @@ public class DataAccess {
     }
 
     public static void logout(String authToken){
+        createIfNeeded();
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("DELETE FROM authdata WHERE authtoken=?")) {
                 preparedStatement.setString(1, authToken);
@@ -147,6 +155,7 @@ public class DataAccess {
     }
 
     public static ArrayList<GameData> getGames(){ //call getGame
+        createIfNeeded();
         ArrayList<GameData> temp = new ArrayList<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT gameid FROM gamedata")) {
@@ -164,6 +173,7 @@ public class DataAccess {
     }
 
     public static int createGame(String gameName){ //don't worry about checking for duplicates just yet
+        createIfNeeded();
         int gameID = generateGameID(gameName);
         String newGame = gameToString(new ChessGame());
         try (var conn = DatabaseManager.getConnection()) {
@@ -186,6 +196,7 @@ public class DataAccess {
     }
 
     public static void updateGame(int gameID, GameData game){
+        createIfNeeded();
         String json = gameToString(game.getGame());
         //delete and replace game with matching ID
         try (var conn = DatabaseManager.getConnection()) {
@@ -213,6 +224,7 @@ public class DataAccess {
     }
 
     public static GameData getGame(int gameID){
+        createIfNeeded();
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata WHERE gameid=?")) {
                 preparedStatement.setInt(1, gameID);
@@ -246,6 +258,7 @@ public class DataAccess {
 
 
     public static String findUser(String authToken){
+        createIfNeeded();
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT username FROM authdata WHERE authtoken=?")) {
                 preparedStatement.setString(1, authToken);

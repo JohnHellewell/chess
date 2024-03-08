@@ -1,4 +1,4 @@
-package dataAccessTests;
+package dataAccess;
 
 import java.sql.*;
 import java.util.Properties;
@@ -11,28 +11,29 @@ public class DatabaseManager {
 
     private static final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS  userdata (
-              'username' varchar(128) NOT NULL,
-              'password' varchar(256) NOT NULL,
-              'email' varchar(128) NOT NULL,
-              PRIMARY KEY (`username`)
+            CREATE TABLE IF NOT EXISTS userdata (
+                `username` varchar(128) NOT NULL,
+                `password` varchar(128) NOT NULL,
+                `email` varchar(128) NOT NULL,
+                PRIMARY KEY (`username`)
             )
+            
             """,
             """
             CREATE TABLE IF NOT EXISTS authdata (
-                'authtoken' varchar(256) NOT NULL,
-                'username' varchar(128) NOT NULL,
-                PRIMARY KEY('username')
+                `authtoken` varchar(256) NOT NULL,
+                `username` varchar(128) NOT NULL,
+                PRIMARY KEY (`username`)
             )
             """,
             """
             CREATE TABLE IF NOT EXISTS gamedata (
-                'gameid' int NOT NULL,
-                'gamename' varchar(128) NOT NULL,
-                'whiteusername' varchar(128),
-                'blackusername' varchar(128),
-                'game' varchar(1024) NOT NULL,
-                PRIMARY KEY('gameid')
+                `gameid` int NOT NULL,
+                `gamename` varchar(128) NOT NULL,
+                `whiteusername` varchar(128),
+                `blackusername` varchar(128),
+                `game` varchar(1024) NOT NULL,
+                PRIMARY KEY (`gameid`)
             )
             """
     };
@@ -67,6 +68,9 @@ public class DatabaseManager {
             var conn = DriverManager.getConnection(connectionUrl, user, password);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
+            }
+            try (var switchStatement = conn.prepareStatement("USE " + databaseName)) {
+                switchStatement.executeUpdate();
             }
             for(String table : createStatements){
                 try(var preparedStatement = conn.prepareStatement(table)){

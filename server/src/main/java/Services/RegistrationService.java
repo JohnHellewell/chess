@@ -1,8 +1,8 @@
 package Services;
 
 import Requests.RegistrationRequest;
-import dataAccessTests.DataAccess;
-import dataAccessTests.DataAccessException;
+import dataAccess.DataAccess;
+import dataAccess.DataAccessException;
 import Responses.JResponse;
 
 public class RegistrationService {
