@@ -67,10 +67,6 @@ public class ClientMain {
 
     }
 
-
-
-
-
     private static void unrecognizedCommand(String[] str){
         String temp = "";
         for(String s : str)
@@ -84,10 +80,7 @@ public class ClientMain {
             unrecognizedCommand(args);
 
         authToken = ServerFacade.registerUser(args[1], args[2], args[3]);
-        if(!authToken.isEmpty()) {
-            loggedIn = true;
-            username = args[1];
-        }
+        loginSuccess(args[1]);
     }
 
     private static void login(String[] args){
@@ -95,7 +88,16 @@ public class ClientMain {
         if(args.length!=3)
             unrecognizedCommand(args);
 
-        //FIXME add code to login user
+        authToken = ServerFacade.loginUser(args[1], args[2]);
+        loginSuccess(args[1]);
+    }
+
+    private static void loginSuccess(String u){
+        if(!authToken.isEmpty()) {
+            loggedIn = true;
+            username = u;
+        }
+        help();
     }
 
     private static void help(){
@@ -113,4 +115,6 @@ public class ClientMain {
         System.out.println("\thelp\t-display a list of commands");
         System.out.println("\tquit\t-close chess program");
     }
+
+
 }
