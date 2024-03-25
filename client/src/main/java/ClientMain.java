@@ -1,3 +1,4 @@
+import java.util.Map;
 import java.util.Scanner;
 public class ClientMain {
 
@@ -79,8 +80,18 @@ public class ClientMain {
         if(args.length!=4)
             unrecognizedCommand(args);
 
-        authToken = ServerFacade.registerUser(args[1], args[2], args[3]);
-        loginSuccess(args[1]);
+
+        Map<String, String> response = ServerFacade.registerUser(args[1], args[2], args[3]);
+        authToken = response.get("authToken");
+        if(authToken==null){
+            try{
+                System.out.println(response.get("message"));
+            }catch(Exception f){
+                System.out.println("Error: no error msg available");
+            }
+        } else {
+            loginSuccess(args[1]);
+        }
     }
 
     private static void login(String[] args){
@@ -88,14 +99,29 @@ public class ClientMain {
         if(args.length!=3)
             unrecognizedCommand(args);
 
-        authToken = ServerFacade.loginUser(args[1], args[2]);
-        loginSuccess(args[1]);
+
+        Map<String, String> response = ServerFacade.loginUser(args[1], args[2]);
+        authToken = response.get("authToken");
+        if(authToken==null){
+            try{
+                System.out.println(response.get("message"));
+            }catch(Exception f){
+                System.out.println("Error: no error msg available");
+            }
+        } else {
+            loginSuccess(args[1]);
+        }
     }
 
+
+
+
     private static void loginSuccess(String u){
-        if(!authToken.isEmpty()) {
+        if(authToken!=null) {
             loggedIn = true;
             username = u;
+        } else {
+            System.out.println("Error.");
         }
         help();
     }

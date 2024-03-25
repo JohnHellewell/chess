@@ -67,6 +67,13 @@ public class ServerFacade {
                 InputStream responseBody = connection.getErrorStream();
                 // Read and process error response body from InputStream ...
                 //FIXME add a way to display the error
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody));
+                String jsonResponse = reader.readLine();//store the json response
+
+                Map<String, String> responseVars = gson.fromJson(jsonResponse, Map.class);
+
+                return responseVars;
             }
         } catch(Exception e){
             System.out.println("Client Error: " + e.getMessage());
@@ -74,7 +81,7 @@ public class ServerFacade {
         return null;
     }
 
-    public static String registerUser(String username, String password, String email){ //returns authToken
+    public static Map<String, String> registerUser(String username, String password, String email){ //returns authToken
         Map<String, String> args = new HashMap<>();
         args.put("username", username);
         args.put("password", password);
@@ -82,17 +89,17 @@ public class ServerFacade {
 
         Map<String, String> resVars = postCommand("/user", args);
 
-        return  resVars.get("authToken");
+        return  resVars;
     }
 
-    public static String loginUser(String username, String password){
+    public static Map<String, String> loginUser(String username, String password){
         Map<String, String> args = new HashMap<>();
         args.put("username", username);
         args.put("password", password);
 
         Map<String, String> resVars = postCommand("/session", args);
 
-        return  resVars.get("authToken");
+        return  resVars;
     }
 
 
