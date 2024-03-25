@@ -73,7 +73,7 @@ public class ServerFacade {
         }
     }
 
-    public static void registerUser(String username, String password, String email){
+    public static String registerUser(String username, String password, String email){ //returns authToken
         try {
             URI uri = new URI("http://localhost:8080/user");
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
@@ -100,52 +100,44 @@ public class ServerFacade {
             OutputStream outStream = connection.getOutputStream();
             outStream.write(jsonDataBytes);
 
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                // Get HTTP response headers, if necessary
-                // Map<String, List<String>> headers = connection.getHeaderFields();
-
-                // OR
-
-                //connection.getHeaderField("Content-Length");
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) { //success
+                int resCode = connection.getResponseCode();
+                if(resCode == 200){
+                    System.out.println("success");
+                }
 
                 InputStream responseBody = connection.getInputStream();
                 // Read and process response body from InputStream ...
-                System.out.println(responseBody);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody));
+                String jsonResponse = reader.readLine();//store the json response
+
+                Map<String, String> responseVars = gson.fromJson(jsonResponse, Map.class);
+                //System.out.println("username: " + responseVars.get("username"));
+                //System.out.println("authToken: " + responseVars.get("authToken"));
+                String authToken = responseVars.get("authToken");
+                //temporary
+                //System.out.println(jsonResponse);
+
+                // Close resources
+                reader.close();
+                responseBody.close();
+                connection.disconnect();
+
+                return authToken;
             } else {
                 // SERVER RETURNED AN HTTP ERROR
 
                 InputStream responseBody = connection.getErrorStream();
                 // Read and process error response body from InputStream ...
-                if (responseBody != null) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody))) {
-                        String line;
-                        StringBuilder errorMessage = new StringBuilder();
 
-                        // Read each line from the InputStream
-                        while ((line = reader.readLine()) != null) {
-                            errorMessage.append(line).append("\n");
-                        }
-
-                        // Print the error message
-                        System.err.println("Error Message: " + errorMessage.toString());
-                    } catch (IOException e) {
-                        e.printStackTrace(); // Handle IOException if any
-                    } finally {
-                        try {
-                            responseBody.close(); // Close the InputStream
-                        } catch (IOException e) {
-                            e.printStackTrace(); // Handle IOException if any
-                        }
-                    }
-                } else {
-                    System.err.println("No error message available."); // No error message available
-                }
             }
 
 
         } catch(Exception e){
             System.out.println("Client Error: " + e.getMessage());
         }
+
+        return "";
     }
 
 

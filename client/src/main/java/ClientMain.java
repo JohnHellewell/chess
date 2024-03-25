@@ -1,7 +1,9 @@
 import java.util.Scanner;
 public class ClientMain {
 
-    static boolean loggedIn = false;
+    private static boolean loggedIn = false;
+
+    private static String authToken = "";
     public static void main(String[] args) {
         //var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         //System.out.println("♕ 240 Chess Client: " + piece);
@@ -76,7 +78,9 @@ public class ClientMain {
         if(args.length!=4)
             unrecognizedCommand(args);
 
-        ServerFacade.registerUser(args[1], args[2], args[3]);
+        authToken = ServerFacade.registerUser(args[1], args[2], args[3]);
+        if(!authToken.isEmpty())
+            loggedIn = true;
     }
 
     private static void login(String[] args){
@@ -89,8 +93,13 @@ public class ClientMain {
 
     private static void help(){
         System.out.println("Commands:");
-        System.out.println("\tregister <USERNAME> <PASSWORD> <EMAIL>\t-create a new account");
-        System.out.println("\tlogin <USERNAME> <PASSWORD>\t\t\t\t-login into an existing account");
+        if(!loggedIn) { //Logged OUT menu
+            System.out.println("\tregister <USERNAME> <PASSWORD> <EMAIL>\t-create a new account");
+            System.out.println("\tlogin <USERNAME> <PASSWORD>\t\t\t\t-login into an existing account");
+        } else { //Logged IN menu
+            System.out.println("\tregister <USERNAME> <PASSWORD> <EMAIL>\t-create a new account");
+            System.out.println("\tlogin <USERNAME> <PASSWORD>\t\t\t\t-login into an existing account");
+        }
         System.out.println("\thelp\t\t\t\t\t\t\t\t\t-display a list of commands");
         System.out.println("\tquit\t\t\t\t\t\t\t\t\t-close chess program");
     }
