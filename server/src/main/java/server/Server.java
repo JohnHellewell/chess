@@ -5,7 +5,9 @@ import spark.*;
 
 public class Server {
 
-
+    public int run(){ //default, run at port 8080
+        return run(8080);
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);

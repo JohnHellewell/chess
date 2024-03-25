@@ -21,7 +21,7 @@ public class Main {
         String input = scanner.nextLine();
         parseInput(input);
 
-        awaitInput();
+        awaitInput();//calls back on itself to await another command
     }
 
     private static void parseInput(String input){
@@ -32,55 +32,56 @@ public class Main {
             command = input.substring(0, input.indexOf(' '));
         }
 
-        switch(command.toUpperCase()){
-            case "HELP":{
+        switch (command.toUpperCase()) {
+            case "HELP": {
                 help();
                 break;
             }
-            case "QUIT":{ //later, make sure to log out when this is called!
+            case "QUIT": { //later, make sure to log out when this is called!
                 System.exit(0);
                 break; //i shouldn't need this line but i included it
             }
-            case "REGISTER":{
-                register(input.split(' '));
+            case "REGISTER": {
+                register(input.split(" "));
                 break;
             }
-            default:{
-                System.out.println("Invalid command \'" + command + "\'. Please try again. Type \'help\' for a list of commands");
-                //help();
+            case "LOGIN": {
+                login(input.split(" "));
+                break;
+            }
+            default: {
+                unrecognizedCommand(new String[]{command});
                 break;
             }
         }
+
     }
 
-    private static boolean verifyCommandFormat(String str){ //makes sure there is only one set of <> brackets, and no spaces
-        if(str.charAt(0)!='<' || str.charAt(str.length()-1)!='>') //begins and ends with brackets
-            return false;
-        if(str.indexOf(' ')>=0)// no spaces
-            return false;
-        if(str.indexOf('<', 1)>=0 || str.indexOf('>')<str.length()-1)//checks that there are no other brackets
-            return false;
 
-        //all tests passed
-        return true;
-    }
 
-    private static String removeAngleBrackets(String str){ //verifies that
-        if(verifyCommandFormat(str)) {//double check
-            return str.substring(1, str.length()-1);
-        } else {
-            return str;
-        }
-    }
 
-    private void unrecognizedCommand(String str){
 
+    private static void unrecognizedCommand(String[] str){
+        String temp = "";
+        for(String s : str)
+            temp+=s+" ";
+        System.out.println("ERROR: Invalid command \'" + temp.trim() + "\'. Please try again. Type \'help\' for a list of commands");
     }
 
     private static void register(String[] args){
         // expecting "<USERNAME>", "<PASSWORD>", "<EMAIL>"
         if(args.length!=4)
-            
+            unrecognizedCommand(args);
+
+        //FIXME add code to register user
+    }
+
+    private static void login(String[] args){
+        // expecting "login <USERNAME> <PASSWORD>"
+        if(args.length!=3)
+            unrecognizedCommand(args);
+
+        //FIXME add code to login user
     }
 
     private static void help(){
