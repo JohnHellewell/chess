@@ -8,21 +8,22 @@ public class ServerFacade {
 
     }
 
-    public void registerUser(String username, String password){
+    public static void registerUser(String username, String password, String email){
         try {
             URI uri = new URI("http://localhost:8080/user");
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
             //http.setRequestMethod("GET");
 
             // Make the request
-            connection.connect();
+            //connection.connect();
 
             connection.setReadTimeout(5000);
             connection.setRequestMethod("POST");//register user
 
             // Set HTTP request headers, if necessary
-            connection.addRequestProperty("username", "test");
-            connection.addRequestProperty("password", "test");
+            connection.addRequestProperty("username", username);
+            connection.addRequestProperty("password", password);
+            connection.addRequestProperty("email", email);
 
             connection.connect();
 

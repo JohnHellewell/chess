@@ -1,6 +1,5 @@
-import chess.*;
 import java.util.Scanner;
-public class Main {
+public class ClientMain {
 
     static boolean loggedIn = false;
     public static void main(String[] args) {
@@ -73,7 +72,7 @@ public class Main {
         if(args.length!=4)
             unrecognizedCommand(args);
 
-        //FIXME add code to register user
+        ServerFacade.registerUser(args[1], args[2], args[3]);
     }
 
     private static void login(String[] args){
