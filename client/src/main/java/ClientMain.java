@@ -48,6 +48,10 @@ public class ClientMain {
                 login(input.split(" "));
                 break;
             }
+            case "CLEAR":{
+                ServerFacade.clear();
+                break;
+            }
             default: {
                 unrecognizedCommand(new String[]{command});
                 break;
