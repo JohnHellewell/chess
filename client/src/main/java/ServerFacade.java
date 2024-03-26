@@ -174,11 +174,15 @@ public class ServerFacade {
         }
     }
 
-    public static void joinGame(String gameID, String player, String authToken){
+    public static String joinGame(String gameID, String player, String authToken){
         Map<String, String> args = new HashMap<>();
         args.put("gameID", gameID);
         args.put("playerColor", player);
         Map<String, String> response = postCommand("/game", "PUT", args, authToken);
+        return response.get("message");
+    }
 
+    public static String spectateGame(String gameID, String authToken){
+        return joinGame(gameID, "", authToken);
     }
 }

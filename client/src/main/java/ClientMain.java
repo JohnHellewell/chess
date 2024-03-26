@@ -224,12 +224,14 @@ public class ClientMain {
             unrecognizedCommand(args);
         } else { //correct format
             //join or spectate
+            String message;
             if(args.length==2){
                 //spectate
+                message = ServerFacade.spectateGame(args[1], authToken);
             } else { //length==3
-                ServerFacade.joinGame(args[1], args[2], authToken);
-                //FIXME
+                message = ServerFacade.joinGame(args[1], args[2], authToken);
             }
+            System.out.println(message);
         }
     }
 }
