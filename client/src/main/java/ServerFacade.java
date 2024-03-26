@@ -1,9 +1,13 @@
 import com.google.gson.Gson;
+import model.GameData;
+import ui.ListGamesResponse;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,23 +17,45 @@ public class ServerFacade {
 
     }
 
-    public static void clear(){ //temporary
+    public static void clear(){
+        int code = deleteCommand("/db", null);
+        if(code==200){
+            System.out.println("db cleared");
+
+        } else {
+            System.out.println("Error code: " + code);
+        }
+    }
+
+    public static boolean logout(String authToken){
+        int code = deleteCommand("/session", authToken);
+        if(code==200){
+            System.out.println("logged out.");
+            return true;
+        } else {
+            System.out.println("Error code: " + code);
+            return false;
+        }
+    }
+
+    public static int deleteCommand(String endpoint, String authToken){ //temporary
         try {
-            URI uri = new URI("http://localhost:8080/db");
+            URI uri = new URI("http://localhost:8080" + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 
             connection.setReadTimeout(5000);
             connection.setRequestMethod("DELETE");//clear db
 
+            if(authToken!=null){
+                connection.setRequestProperty("authorization", authToken);
+            }
+
             connection.connect();
 
-            int responseCode = connection.getResponseCode();
-            if(responseCode==200)
-                System.out.println("db cleared");
-            else
-                System.out.println("Response Code: " + responseCode);
+            return connection.getResponseCode();
         } catch(Exception e){
             System.out.println("Client Error: " + e.getMessage());
+            return -1;
         }
     }
 
@@ -54,13 +80,6 @@ public class ServerFacade {
             outStream.write(jsonDataBytes);
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) { //success
-                int resCode = connection.getResponseCode();
-                if(resCode == 200){
-                    System.out.println("success");
-                } else {
-                    System.out.println("error code " + resCode);
-                }
-
                 InputStream responseBody = connection.getInputStream();
                 // Read and process response body from InputStream ...
                 BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody));
@@ -127,4 +146,34 @@ public class ServerFacade {
 
         return postCommand("/game", args, authToken);
     }
+
+    public static GameData[] listGames(String authToken){
+        try {
+            URI uri = new URI("http://localhost:8080" + "/game");
+            HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+
+            connection.setReadTimeout(5000);
+            connection.setRequestMethod("GET");//list games
+
+            connection.setRequestProperty("authorization", authToken);
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                InputStream responseBody = connection.getInputStream();
+                // Read and process response body from InputStream ...
+                BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody));
+                String jsonResponse = reader.readLine();//store the json response
+                Gson gson = new Gson();
+                ListGamesResponse games = gson.fromJson(jsonResponse, ListGamesResponse.class);
+                return games.getGames();
+            } else {
+                return null;//FIXME
+            }
+
+
+        } catch(Exception e){
+            System.out.println("Client Error: " + e.getMessage());
+            return null;
+        }
+    }
+
 }

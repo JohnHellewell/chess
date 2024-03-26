@@ -1,3 +1,6 @@
+import model.GameData;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 public class ClientMain {
@@ -59,6 +62,18 @@ public class ClientMain {
             case "CREATE":{ //logged in exclusive
                 if(loggedIn){
                     create(input.split(" "));
+                    break;
+                }
+            }
+            case "LOGOUT":{//logged in exclusive
+                if(loggedIn){
+                    logout();
+                    break;
+                }
+            }
+            case "LIST":{//logged in exclusive
+                if(loggedIn){
+                    list();
                     break;
                 }
             }
@@ -162,5 +177,26 @@ public class ClientMain {
         }
         //Double id = Double.valueOf(response.get("gameID"));
         System.out.println("\"" + args[1] + "\" created successfully with gameID: " + response.get("gameID"));
+    }
+
+    private static void logout(){
+        if(ServerFacade.logout(authToken)){
+            loggedIn=false;
+            authToken=null;
+            username=null;
+            help();
+        }
+
+    }
+
+    private static void list(){
+        GameData[] games = ServerFacade.listGames(authToken);
+        if(games!=null && games.length>0) {
+            for (GameData game : games) {
+                System.out.println("\tGame Name: " + game.getGameName() + "\tGame ID: " + game.getGameID()
+                        + "\tWhite Player: " + game.getWhiteUsername() + "\tBlack Player: " + game.getBlackUsername());
+            }
+        } else
+            System.out.println("No games found.");
     }
 }
