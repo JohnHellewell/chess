@@ -1,4 +1,7 @@
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
+import ui.DrawBoard;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +12,9 @@ public class ClientMain {
 
     private static String authToken = "";
     private static String username = "";
+
+    private static int gameID = -1; //gameID of what should be displayed
+    private static ChessGame game = null;
     public static void main(String[] args) {
         //var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         //System.out.println("♕ 240 Chess Client: " + piece);
@@ -55,7 +61,7 @@ public class ClientMain {
                     break;
                 }
                 case "LIST":{//logged in exclusive
-                    list();
+                    list(-1);
                     break;
                 }
                 case "JOIN":{
@@ -203,12 +209,20 @@ public class ClientMain {
 
     }
 
-    private static void list(){
+    private static void list(int getGame){ //-1 to display to screen, or give a gameID to update this.game (with no display)
         GameData[] games = ServerFacade.listGames(authToken);
         if(games!=null && games.length>0) {
-            for (GameData game : games) {
-                System.out.println("\tGame Name: " + game.getGameName() + "\tGame ID: " + game.getGameID()
-                        + "\tWhite Player: " + game.getWhiteUsername() + "\tBlack Player: " + game.getBlackUsername());
+            for (GameData gameData : games) {
+                if (getGame==-1) { //just display the games to the screen
+                    System.out.println("\tGame Name: " + gameData.getGameName() + "\tGame ID: " + gameData.getGameID()
+                            + "\tWhite Player: " + gameData.getWhiteUsername() + "\tBlack Player: " + gameData.getBlackUsername());
+                } else {
+                    if(gameData.getGameID()==getGame){
+                        game = gameData.getGame();
+                        gameID = getGame;
+                        break;
+                    }
+                }
             }
         } else
             System.out.println("No games found.");
@@ -232,6 +246,21 @@ public class ClientMain {
                 message = ServerFacade.joinGame(args[1], args[2], authToken);
             }
             System.out.println(message);
+
+            if(message.trim().equals("success")){
+                updateGame(Integer.parseInt(args[1]));
+            }
         }
+    }
+
+
+
+    private static void updateGame(int gameID){
+        list(gameID);
+        drawBoard();
+    }
+
+    private static void drawBoard(){
+        DrawBoard.drawBoard(game.getBoard(), DrawBoard.ORIENTATION.BOTH);
     }
 }
