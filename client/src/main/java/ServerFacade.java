@@ -2,12 +2,10 @@ import com.google.gson.Gson;
 import model.GameData;
 import ui.ListGamesResponse;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +16,7 @@ public class ServerFacade {
     }
 
     public static void clear(){
-        int code = deleteCommand("/db", null);
+        int code = deletePutCommand("/db", "DELETE", null);
         if(code==200){
             System.out.println("db cleared");
 
@@ -28,7 +26,7 @@ public class ServerFacade {
     }
 
     public static boolean logout(String authToken){
-        int code = deleteCommand("/session", authToken);
+        int code = deletePutCommand("/session", "DELETE", authToken);
         if(code==200){
             System.out.println("logged out.");
             return true;
@@ -38,13 +36,13 @@ public class ServerFacade {
         }
     }
 
-    public static int deleteCommand(String endpoint, String authToken){ //temporary
+    public static int deletePutCommand(String endpoint, String httpMethod, String authToken){ //temporary
         try {
             URI uri = new URI("http://localhost:8080" + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 
             connection.setReadTimeout(5000);
-            connection.setRequestMethod("DELETE");//clear db
+            connection.setRequestMethod(httpMethod);//clear db
 
             if(authToken!=null){
                 connection.setRequestProperty("authorization", authToken);
@@ -59,12 +57,12 @@ public class ServerFacade {
         }
     }
 
-    private static Map<String, String> postCommand(String endpoint, Map<String, String> reqData, String authToken){ //creates http connection, sends Map of variables as json, returns response as Map of variables
+    private static Map<String, String> postCommand(String endpoint, String httpMethod, Map<String, String> reqData, String authToken){ //creates http connection, sends Map of variables as json, returns response as Map of variables
         try {
             URI uri = new URI("http://localhost:8080" + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setReadTimeout(5000);
-            connection.setRequestMethod("POST");//register user
+            connection.setRequestMethod(httpMethod);//register user
 
             if(authToken!=null){
                 connection.setRequestProperty("authorization", authToken);
@@ -87,7 +85,7 @@ public class ServerFacade {
 
                 Map<String, String> responseVars = gson.fromJson(jsonResponse, Map.class);
 
-                if(jsonResponse.contains("gameID")){ //patched problem with converting int to string in json
+                if(jsonResponse.contains("gameID") && endpoint.equals("/game") && httpMethod.equals("POST")){ //patched problem with converting int to string in json
                     String id = jsonResponse.substring(jsonResponse.indexOf("gameID")+8, jsonResponse.indexOf("gameID")+12);
                     responseVars.replace("gameID", id);
                 }
@@ -125,7 +123,7 @@ public class ServerFacade {
         args.put("password", password);
         args.put("email", email);
 
-        Map<String, String> resVars = postCommand("/user", args, null);
+        Map<String, String> resVars = postCommand("/user", "POST", args, null);
 
         return  resVars;
     }
@@ -135,7 +133,7 @@ public class ServerFacade {
         args.put("username", username);
         args.put("password", password);
 
-        Map<String, String> resVars = postCommand("/session", args, null);
+        Map<String, String> resVars = postCommand("/session", "POST", args, null);
 
         return  resVars;
     }
@@ -144,7 +142,7 @@ public class ServerFacade {
         Map<String, String> args = new HashMap<>();
         args.put("gameName", name);
 
-        return postCommand("/game", args, authToken);
+        return postCommand("/game", "POST", args, authToken);
     }
 
     public static GameData[] listGames(String authToken){
@@ -176,4 +174,11 @@ public class ServerFacade {
         }
     }
 
+    public static void joinGame(String gameID, String player, String authToken){
+        Map<String, String> args = new HashMap<>();
+        args.put("gameID", gameID);
+        args.put("playerColor", player);
+        Map<String, String> response = postCommand("/game", "PUT", args, authToken);
+
+    }
 }

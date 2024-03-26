@@ -37,55 +37,69 @@ public class ClientMain {
         } else {
             command = input.substring(0, input.indexOf(' '));
         }
-
-        switch (command.toUpperCase()) {
-            case "HELP": {
-                help();
-                break;
-            }
-            case "QUIT": { //later, make sure to log out when this is called!
-                System.exit(0);
-                break; //i shouldn't need this line but i included it
-            }
-            case "REGISTER": { //logged out exclusive
-                if(!loggedIn) {
-                    register(input.split(" "));
+        if(loggedIn){
+            switch (command.toUpperCase()) {
+                case "HELP": {
+                    help();
                     break;
                 }
-            }
-            case "LOGIN": { //logged out exclusive
-                if(!loggedIn) {
-                    login(input.split(" "));
-                    break;
+                case "QUIT": {
+                    System.exit(0);
                 }
-            }
-            case "CREATE":{ //logged in exclusive
-                if(loggedIn){
+                case "CREATE":{ //logged in exclusive
                     create(input.split(" "));
                     break;
                 }
-            }
-            case "LOGOUT":{//logged in exclusive
-                if(loggedIn){
+                case "LOGOUT":{//logged in exclusive
                     logout();
                     break;
                 }
-            }
-            case "LIST":{//logged in exclusive
-                if(loggedIn){
+                case "LIST":{//logged in exclusive
                     list();
                     break;
                 }
+                case "JOIN":{
+                    join(input.split(" "));
+                    break;
+                }
+                case "CLEAR":{
+                    ServerFacade.clear();
+                    break;
+                }
+                default: {
+                    unrecognizedCommand(new String[]{command});
+                    break;
+                }
             }
-            case "CLEAR":{
-                ServerFacade.clear();
-                break;
-            }
-            default: {
-                unrecognizedCommand(new String[]{command});
-                break;
+        } else {
+            switch (command.toUpperCase()) {
+                case "HELP": {
+                    help();
+                    break;
+                }
+                case "QUIT": { //later, make sure to log out when this is called!
+                    System.exit(0);
+                    break; //i shouldn't need this line but i included it
+                }
+                case "REGISTER": { //logged out exclusive
+                    register(input.split(" "));
+                    break;
+                }
+                case "LOGIN": { //logged out exclusive
+                    login(input.split(" "));
+                    break;
+                }
+                case "CLEAR":{
+                    ServerFacade.clear();
+                    break;
+                }
+                default: {
+                    unrecognizedCommand(new String[]{command});
+                    break;
+                }
             }
         }
+
 
     }
 
@@ -198,5 +212,24 @@ public class ClientMain {
             }
         } else
             System.out.println("No games found.");
+    }
+
+    private static void join(String[] args){
+        if(args.length!=2 && args.length!=3){
+            unrecognizedCommand(args);
+            return;
+        }
+        //verify that the third argument is "WHITE" or "BLACK"
+        if(args.length==3 && !args[2].equals("WHITE")&& !args[2].equals("BLACK")){
+            unrecognizedCommand(args);
+        } else { //correct format
+            //join or spectate
+            if(args.length==2){
+                //spectate
+            } else { //length==3
+                ServerFacade.joinGame(args[1], args[2], authToken);
+                //FIXME
+            }
+        }
     }
 }
