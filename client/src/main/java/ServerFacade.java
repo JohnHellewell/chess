@@ -22,6 +22,12 @@ public class ServerFacade {
             connection.setRequestMethod("DELETE");//clear db
 
             connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            if(responseCode==200)
+                System.out.println("db cleared");
+            else
+                System.out.println("Response Code: " + responseCode);
         } catch(Exception e){
             System.out.println("Client Error: " + e.getMessage());
         }
