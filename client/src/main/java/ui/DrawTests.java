@@ -10,7 +10,7 @@ public class DrawTests {
     public void drawBoardTest(){
         ChessBoard board = new ChessBoard();
         board.resetBoard();
-        DrawBoard.drawBoard(board, DrawBoard.ORIENTATION.WHITE);
+        DrawBoard.drawBoard(board, DrawBoard.ORIENTATION.BOTH);
     }
 
 }
