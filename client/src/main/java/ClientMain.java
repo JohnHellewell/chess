@@ -56,6 +56,12 @@ public class ClientMain {
                     break;
                 }
             }
+            case "CREATE":{ //logged in exclusive
+                if(loggedIn){
+                    create(input.split(" "));
+                    break;
+                }
+            }
             case "CLEAR":{
                 ServerFacade.clear();
                 break;
@@ -77,8 +83,10 @@ public class ClientMain {
 
     private static void register(String[] args){
         // expecting "<USERNAME>", "<PASSWORD>", "<EMAIL>"
-        if(args.length!=4)
+        if(args.length!=4) {
             unrecognizedCommand(args);
+            return;
+        }
 
 
         Map<String, String> response = ServerFacade.registerUser(args[1], args[2], args[3]);
@@ -94,34 +102,35 @@ public class ClientMain {
         }
     }
 
-    private static void login(String[] args){
+    private static void login(String[] args) {
         // expecting "login <USERNAME> <PASSWORD>"
-        if(args.length!=3)
+        if (args.length != 3){
             unrecognizedCommand(args);
-
+            return;
+        }
 
         Map<String, String> response = ServerFacade.loginUser(args[1], args[2]);
         authToken = response.get("authToken");
-        if(authToken==null){
-            try{
+        if (authToken == null) {
+            try {
                 System.out.println(response.get("message"));
-            }catch(Exception f){
+            } catch (Exception f) {
                 System.out.println("Error: no error msg available");
             }
         } else {
             loginSuccess(args[1]);
         }
+
     }
-
-
 
 
     private static void loginSuccess(String u){
         if(authToken!=null) {
             loggedIn = true;
             username = u;
+            System.out.println(authToken);//remove later
         } else {
-            System.out.println("Error.");
+            System.out.println("Error, authToken is null");
         }
         help();
     }
@@ -142,5 +151,16 @@ public class ClientMain {
         System.out.println("\tquit\t-close chess program");
     }
 
-
+    private static void create(String[] args){ //returns the gameID
+        if(args.length!=2) {
+            unrecognizedCommand(args);
+            return;
+        }
+        Map<String, String> response = ServerFacade.createGame(args[1], authToken);
+        if(response.containsKey("message")){
+            System.out.println(response.get("message"));
+        }
+        //Double id = Double.valueOf(response.get("gameID"));
+        System.out.println("\"" + args[1] + "\" created successfully with gameID: " + response.get("gameID"));
+    }
 }

@@ -27,12 +27,16 @@ public class ServerFacade {
         }
     }
 
-    private static Map<String, String> postCommand(String endpoint, Map<String, String> reqData){ //creates http connection, sends Map of variables as json, returns response as Map of variables
+    private static Map<String, String> postCommand(String endpoint, Map<String, String> reqData, String authToken){ //creates http connection, sends Map of variables as json, returns response as Map of variables
         try {
             URI uri = new URI("http://localhost:8080" + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setReadTimeout(5000);
             connection.setRequestMethod("POST");//register user
+
+            if(authToken!=null){
+                connection.setRequestProperty("authorization", authToken);
+            }
 
             Gson gson = new Gson();
             String json = gson.toJson(reqData); //turn variables into json
@@ -47,6 +51,8 @@ public class ServerFacade {
                 int resCode = connection.getResponseCode();
                 if(resCode == 200){
                     System.out.println("success");
+                } else {
+                    System.out.println("error code " + resCode);
                 }
 
                 InputStream responseBody = connection.getInputStream();
@@ -55,6 +61,11 @@ public class ServerFacade {
                 String jsonResponse = reader.readLine();//store the json response
 
                 Map<String, String> responseVars = gson.fromJson(jsonResponse, Map.class);
+
+                if(jsonResponse.contains("gameID")){ //patched problem with converting int to string in json
+                    String id = jsonResponse.substring(jsonResponse.indexOf("gameID")+8, jsonResponse.indexOf("gameID")+12);
+                    responseVars.replace("gameID", id);
+                }
 
                 // Close resources
                 reader.close();
@@ -73,6 +84,8 @@ public class ServerFacade {
 
                 Map<String, String> responseVars = gson.fromJson(jsonResponse, Map.class);
 
+
+
                 return responseVars;
             }
         } catch(Exception e){
@@ -87,7 +100,7 @@ public class ServerFacade {
         args.put("password", password);
         args.put("email", email);
 
-        Map<String, String> resVars = postCommand("/user", args);
+        Map<String, String> resVars = postCommand("/user", args, null);
 
         return  resVars;
     }
@@ -97,10 +110,15 @@ public class ServerFacade {
         args.put("username", username);
         args.put("password", password);
 
-        Map<String, String> resVars = postCommand("/session", args);
+        Map<String, String> resVars = postCommand("/session", args, null);
 
         return  resVars;
     }
 
+    public static Map<String, String> createGame(String name, String authToken){
+        Map<String, String> args = new HashMap<>();
+        args.put("gameName", name);
 
+        return postCommand("/game", args, authToken);
+    }
 }
