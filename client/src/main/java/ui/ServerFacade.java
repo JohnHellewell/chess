@@ -18,12 +18,6 @@ public class ServerFacade {
 
     public static int PORT = 8080;
 
-    public ServerFacade(){
-
-    }
-
-
-
     public static void clear(){
         int code = deletePutCommand("/db", "DELETE", null);
         if(code==200){
@@ -45,7 +39,7 @@ public class ServerFacade {
         }
     }
 
-    public static int deletePutCommand(String endpoint, String httpMethod, String authToken){ //temporary
+    private static int deletePutCommand(String endpoint, String httpMethod, String authToken){ //temporary
         try {
             URI uri = new URI("http://localhost:" + PORT + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();

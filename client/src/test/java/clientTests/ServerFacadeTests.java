@@ -54,6 +54,16 @@ public class ServerFacadeTests {
         Assertions.assertFalse(ServerFacade.logout(authToken)); //test that an unauthorized token cannot be logged out
     }
 
+    @Test
+    public void loginTest(){
+        ServerFacade.clear();
+        String authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
+        ServerFacade.logout(authToken);
+
+        Assertions.assertTrue(ServerFacade.loginUser("john", "duck").get("username").equals("john"));
+        Assertions.assertNotNull(ServerFacade.loginUser("john", "duck").get("authToken"));
+    }
+
 
 
 }
