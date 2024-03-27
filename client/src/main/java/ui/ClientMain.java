@@ -165,7 +165,7 @@ public class ClientMain {
         if(authToken!=null) {
             loggedIn = true;
             username = u;
-            System.out.println(authToken);//remove later
+            //System.out.println(authToken);//remove later
         } else {
             System.out.println("Error, authToken is null");
         }
