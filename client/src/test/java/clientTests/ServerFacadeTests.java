@@ -12,9 +12,12 @@ public class ServerFacadeTests {
 
     @BeforeAll
     public static void init() {
+        int desiredPort = 8070;
         server = new Server();
-        var port = server.run(8080);
+        var port = server.run(desiredPort);
         System.out.println("Started test HTTP server on " + port);
+
+        ServerFacade.PORT = desiredPort;
     }
 
     @AfterAll

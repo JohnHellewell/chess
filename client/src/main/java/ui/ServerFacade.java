@@ -12,11 +12,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 public class ServerFacade {
+
+    public static int PORT = 8080;
 
     public ServerFacade(){
 
     }
+
+
 
     public static void clear(){
         int code = deletePutCommand("/db", "DELETE", null);
@@ -41,7 +47,7 @@ public class ServerFacade {
 
     public static int deletePutCommand(String endpoint, String httpMethod, String authToken){ //temporary
         try {
-            URI uri = new URI("http://localhost:8080" + endpoint);
+            URI uri = new URI("http://localhost:" + PORT + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 
             connection.setReadTimeout(5000);
@@ -62,7 +68,7 @@ public class ServerFacade {
 
     private static Map<String, String> postCommand(String endpoint, String httpMethod, Map<String, String> reqData, String authToken){ //creates http connection, sends Map of variables as json, returns response as Map of variables
         try {
-            URI uri = new URI("http://localhost:8080" + endpoint);
+            URI uri = new URI("http://localhost:" + PORT + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setReadTimeout(5000);
             connection.setRequestMethod(httpMethod);//register user
@@ -150,7 +156,7 @@ public class ServerFacade {
 
     public static GameData[] listGames(String authToken){
         try {
-            URI uri = new URI("http://localhost:8080" + "/game");
+            URI uri = new URI("http://localhost:" + PORT + "/game");
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 
             connection.setReadTimeout(5000);
