@@ -32,47 +32,73 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void registerTest(){
+    public void registerTestA(){
         ServerFacade.clear();
-
         //test that a new user can be registered
         Assertions.assertTrue(ServerFacade.registerUser("john", "h", "email.com")!=null);
+        }
+
+    @Test
+    public void registerTestB(){
+        ServerFacade.clear();
+        ServerFacade.registerUser("john", "h", "email.com");
 
         //test that it won't allow two identical usernames to join, throws message
         Assertions.assertTrue(ServerFacade.registerUser("john", "h", "email.com").get("message").equals("Error: already taken"));
     }
 
     @Test
-    public void logoutTest(){
+    public void logoutTestA(){
         ServerFacade.clear();
         String authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
         Assertions.assertTrue(ServerFacade.logout(authToken)); //test that a user can logout
+    }
 
+    @Test
+    public void logoutTestB(){
         ServerFacade.clear();
-        authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
+        String authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
         authToken = "fake_auth_token";
         Assertions.assertFalse(ServerFacade.logout(authToken)); //test that an unauthorized token cannot be logged out
     }
 
     @Test
-    public void loginTest(){ //needs negative test
+    public void loginTestA(){ //needs negative test
         ServerFacade.clear();
         String authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
         ServerFacade.logout(authToken);
 
         //assert that a valid login returns the username and an authtoken
-        Assertions.assertTrue(ServerFacade.loginUser("john", "duck").get("username").equals("john"));
+        Assertions.assertEquals("john", ServerFacade.loginUser("john", "duck").get("username"));
         Assertions.assertNotNull(ServerFacade.loginUser("john", "duck").get("authToken"));
     }
 
     @Test
-    public void createGameTest(){
+    public void loginTestB(){
+        ServerFacade.clear();
+
+        //assert that a user who has not been registered cannot login
+        Assertions.assertNull(ServerFacade.loginUser("john", "duck").get("authToken"));
+    }
+
+    @Test
+    public void createGameTestA(){
         ServerFacade.clear();
         String authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
 
         //assert that it returns a gameID
         int gameID = Integer.parseInt(ServerFacade.createGame("testGame", authToken).get("gameID"));
         Assertions.assertNotEquals(gameID, -1);
+    }
+
+    @Test
+    public void createGameTestB(){
+        ServerFacade.clear();
+        String authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
+
+        authToken = "false_token";
+        //assert that it does not return a gameID
+        Assertions.assertNull(ServerFacade.createGame("testGame", authToken).get("gameID"));
     }
 
 }
