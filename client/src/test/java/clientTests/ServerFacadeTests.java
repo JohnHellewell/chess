@@ -55,15 +55,24 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void loginTest(){
+    public void loginTest(){ //needs negative test
         ServerFacade.clear();
         String authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
         ServerFacade.logout(authToken);
 
+        //assert that a valid login returns the username and an authtoken
         Assertions.assertTrue(ServerFacade.loginUser("john", "duck").get("username").equals("john"));
         Assertions.assertNotNull(ServerFacade.loginUser("john", "duck").get("authToken"));
     }
 
+    @Test
+    public void createGameTest(){
+        ServerFacade.clear();
+        String authToken = ServerFacade.registerUser("john", "duck", "emial.com").get("authToken");
 
+        //assert that it returns a gameID
+        int gameID = Integer.parseInt(ServerFacade.createGame("testGame", authToken).get("gameID"));
+        Assertions.assertNotEquals(gameID, -1);
+    }
 
 }

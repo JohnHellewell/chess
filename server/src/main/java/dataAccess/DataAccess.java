@@ -272,7 +272,7 @@ public class DataAccess {
     }
 
     private static int generateGameID(String name){
-        return Math.abs(name.hashCode()%10000); //generates a 4-digit gameID based on the name. I figured this was better than random()
+        return Math.abs(name.hashCode()%9000)+1000; //generates a 4-digit gameID based on the name. I figured this was better than random()
     }
 
     public static GameData getGame(int gameID){
