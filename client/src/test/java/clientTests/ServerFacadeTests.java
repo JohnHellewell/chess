@@ -146,7 +146,8 @@ public class ServerFacadeTests {
         String authToken = ServerFacade.registerUser("john", "duck123", "email.com").get("authToken");
         String gameID = ServerFacade.createGame("gameA", authToken).get("gameID");
 
-        String message = ServerFacade.joinGame(gameID, "INVALID_PLAYER_TYPE", authToken).trim();
+        gameID = "0000"; //fake ID
+        String message = ServerFacade.joinGame(gameID, "BLACK", authToken).trim();
         Assertions.assertNotEquals("success", message);
     }
 
