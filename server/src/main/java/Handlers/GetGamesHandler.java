@@ -1,8 +1,12 @@
 package Handlers;
 
+import Responses.GamesResponse;
 import Services.GetGamesService;
+import model.GameData;
 import spark.Request;
 import spark.Response;
+
+import java.util.ArrayList;
 
 public class GetGamesHandler extends Handler{
 
@@ -15,7 +19,16 @@ public class GetGamesHandler extends Handler{
                 throw new RuntimeException();
             }
             //has token
-            String games = (new GetGamesService()).getGames(auth).toString();
+
+            GamesResponse gamesResponse = (new GetGamesService()).getGames(auth);
+            ArrayList<GameData> gameDataList = gamesResponse.games;
+            GameData[] temp = new GameData[gameDataList.size()];
+            gameDataList.toArray(temp);
+            String games = gson.toJson(temp, GameData[].class);
+
+            //String games = (new GetGamesService()).getGames(auth).toString();
+            //FIXME ^^ why am i using a .toString method?
+
 
             res.status(200);
             res.type("application/json");

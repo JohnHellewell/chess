@@ -225,7 +225,9 @@ public class DataAccess {
     public static int createGame(String gameName){ //don't worry about checking for duplicates just yet
         createIfNeeded();
         int gameID = generateGameID(gameName);
-        String newGame = gameToString(new ChessGame());
+        ChessGame game = new ChessGame();
+        game.resetBoard();
+        String newGame = gameToString(game);
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO gamedata (gameid, whiteusername, blackusername, gamename, game) " +
                     "VALUES(?, ?, ?, ?, ?)")) {
@@ -297,8 +299,8 @@ public class DataAccess {
     }
 
     private static ChessGame stringToGame(String str){
-        var serializer = new Gson();
-        return serializer.fromJson(str, ChessGame.class);
+        Gson gson = new Gson();
+        return gson.fromJson(str, ChessGame.class);
     }
 
     private static String gameToString(ChessGame game){

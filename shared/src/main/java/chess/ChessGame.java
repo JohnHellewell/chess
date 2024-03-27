@@ -17,7 +17,7 @@ public class ChessGame {
 
     public ChessGame() {
         turn = null;
-        board = null;
+        board = new ChessBoard();
     }
 
     /**
@@ -199,6 +199,10 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public void resetBoard(){
+        board.resetBoard();
     }
 
     @Override

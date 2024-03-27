@@ -1,3 +1,4 @@
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import ui.ListGamesResponse;
@@ -161,8 +162,9 @@ public class ServerFacade {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody));
                 String jsonResponse = reader.readLine();//store the json response
                 Gson gson = new Gson();
-                ListGamesResponse games = gson.fromJson(jsonResponse, ListGamesResponse.class);
-                return games.getGames();
+                //ListGamesResponse games = gson.fromJson(jsonResponse, ListGamesResponse.class); //this line is failing
+                //return games.getGames();
+                return gson.fromJson(jsonResponse, GameData[].class);
             } else {
                 return null;//FIXME
             }

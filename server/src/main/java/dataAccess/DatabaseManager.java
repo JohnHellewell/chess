@@ -32,7 +32,7 @@ public class DatabaseManager {
                 `gamename` varchar(128) NOT NULL,
                 `whiteusername` varchar(128),
                 `blackusername` varchar(128),
-                `game` varchar(1024) NOT NULL,
+                `game` varchar(8192) NOT NULL,
                 PRIMARY KEY (`gameid`)
             )
             """
