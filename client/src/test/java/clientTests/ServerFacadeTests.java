@@ -18,6 +18,8 @@ public class ServerFacadeTests {
         System.out.println("Started test HTTP server on " + port);
 
         ServerFacade.PORT = desiredPort;
+
+
     }
 
     @AfterAll
@@ -99,6 +101,53 @@ public class ServerFacadeTests {
         authToken = "false_token";
         //assert that it does not return a gameID
         Assertions.assertNull(ServerFacade.createGame("testGame", authToken).get("gameID"));
+    }
+
+    @Test
+    public void clearTest(){
+        Assertions.assertTrue(ServerFacade.clear());
+    }
+
+    @Test
+    public void listGamesTestA(){
+        ServerFacade.clear();
+        String authToken = ServerFacade.registerUser("john", "duck123", "email.com").get("authToken");
+        ServerFacade.createGame("gameA", authToken);
+        ServerFacade.createGame("gameB", authToken);
+
+        //ensure that two gamedata objects are returned
+        Assertions.assertEquals(ServerFacade.listGames(authToken).length, 2);
+    }
+
+    @Test
+    public void listGamesTestB(){
+        ServerFacade.clear();
+        String authToken = ServerFacade.registerUser("john", "duck123", "email.com").get("authToken");
+        ServerFacade.createGame("gameA", authToken);
+        //ServerFacade.createGame("gameB", authToken);
+
+        //ensure that two gamedata objects are returned
+        Assertions.assertNotEquals(ServerFacade.listGames(authToken).length, 2);
+    }
+
+    @Test
+    public void joinTestA(){
+        ServerFacade.clear();
+        String authToken = ServerFacade.registerUser("john", "duck123", "email.com").get("authToken");
+        String gameID = ServerFacade.createGame("gameA", authToken).get("gameID");
+
+        String message = ServerFacade.joinGame(gameID, "BLACK", authToken).trim();
+        Assertions.assertEquals("success", message);
+    }
+
+    @Test
+    public void joinTestB(){
+        ServerFacade.clear();
+        String authToken = ServerFacade.registerUser("john", "duck123", "email.com").get("authToken");
+        String gameID = ServerFacade.createGame("gameA", authToken).get("gameID");
+
+        String message = ServerFacade.joinGame(gameID, "INVALID_PLAYER_TYPE", authToken).trim();
+        Assertions.assertNotEquals("success", message);
     }
 
 }

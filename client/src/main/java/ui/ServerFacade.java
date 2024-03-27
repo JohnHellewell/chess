@@ -18,13 +18,14 @@ public class ServerFacade {
 
     public static int PORT = 8080;
 
-    public static void clear(){
+    public static boolean clear(){
         int code = deletePutCommand("/db", "DELETE", null);
         if(code==200){
-            System.out.println("db cleared");
-
+            //System.out.println("db cleared");
+            return true;
         } else {
             System.out.println("Error code: " + code);
+            return false;
         }
     }
 
