@@ -29,10 +29,15 @@ public class DrawBoard {
     public static void drawBoard(ChessBoard board, ORIENTATION ori, String square){
         highlight = true;
         pos = square;
-        drawBoard(board, ori);
+        privateDrawBoard(board, ori);
     }
 
     public static void drawBoard(ChessBoard board, ORIENTATION ori){
+        highlight = false;
+        privateDrawBoard(board, ori);
+    }
+
+    private static void privateDrawBoard(ChessBoard board, ORIENTATION ori){
         if(ori==ORIENTATION.BOTH){
             drawBoard(board, ORIENTATION.WHITE);
             System.out.print("\n");

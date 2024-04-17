@@ -119,35 +119,37 @@ public class ClientMain {
 
     private static void parseGamePlayInput(String[] input){
         String command = input[0].toUpperCase();
-
-        if(player == playerType.SPECTATOR){
-            switch(command){
-                case "HIGHLIGHT":{
-                    if(input.length!=2 || !verifySquare(input[1]))
-                        unrecognizedCommand(input);
-                    //correct command format, and the square is a valid square
-                    drawBoard(input[1]);
-                }
-                default: {
-                    unrecognizedCommand(new String[]{command});
-                    break;
-                }
+        switch(command){ //this switch statement is for the shared functions
+            case "HIGHLIGHT":{
+                if(input.length!=2 || !verifySquare(input[1]))
+                    unrecognizedCommand(input);
+                //correct command format, and the square is a valid square
+                drawBoard(input[1]);
+                break;
             }
-        } else { //player is black or white
-            switch(command){
-                case "HIGHLIGHT":{
-                    if(input.length!=2 || !verifySquare(input[1]))
-                        unrecognizedCommand(input);
-                    //correct command format, and the square is a valid square
-                    drawBoard(input[1]);
-                    break;
-                }
-                default: {
-                    unrecognizedCommand(new String[]{command});
-                    break;
+            case "REDRAW":{
+                drawBoard();
+                break;
+            }
+            default:{ //for player/spectator specific functions
+                if(player == playerType.SPECTATOR){
+                    switch(command){
+                        default: {
+                            unrecognizedCommand(new String[]{command});
+                            break;
+                        }
+                    }
+                } else { //player is black or white
+                    switch(command){
+                        default: {
+                            unrecognizedCommand(new String[]{command});
+                            break;
+                        }
+                    }
                 }
             }
         }
+
     }
 
 
