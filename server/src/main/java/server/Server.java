@@ -1,16 +1,23 @@
 package server;
 
 import Handlers.*;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.*;
-
+import org.eclipse.jetty.websocket.api.annotations.*;
+import spark.Spark;
+@WebSocket
 public class Server {
 
     public int run(){ //default, run at port 8080
         return run(8080);
     }
 
+
     public int run(int desiredPort) {
         Spark.port(desiredPort);
+
+        //define web socket endpoint
+        Spark.webSocket("/connect", Server.class);
 
         Spark.staticFiles.location("web");
 
@@ -39,6 +46,12 @@ public class Server {
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    @OnWebSocketMessage
+    public void onMessage(Session session, String message) throws Exception {
+        System.out.printf("Received: %s", message);
+        //session.getRemote().sendString("WebSocket response: " + message);
     }
 
     public void stop() {

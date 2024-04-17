@@ -12,12 +12,40 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.websocket.*;
+import java.net.URI;
+import java.util.Scanner;
 
 
-public class ServerFacade {
+
+
+public class ServerFacade extends Endpoint{
 
     public static int PORT = 8080;
+    private Session session;
 
+    public void openWebSocket() throws Exception{
+        URI uri = new URI("ws://localhost:8080/connect");
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        this.session = container.connectToServer(this, uri);
+
+        this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+            public void onMessage(String message) { //change this later
+                System.out.println(message);
+            }
+        });
+    }
+
+    @Override
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
+        System.out.println("Web Socket Opened");
+    }
+
+    public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
+
+
+    //***** end of websocket code
+    
     public static boolean clear(){
         int code = deletePutCommand("/db", "DELETE", null);
         if(code==200){
@@ -169,7 +197,7 @@ public class ServerFacade {
                 //return games.getGames();
                 return gson.fromJson(jsonResponse, GameData[].class);
             } else {
-                return null;//FIXME
+                return null;
             }
 
 
@@ -190,4 +218,6 @@ public class ServerFacade {
     public static String spectateGame(String gameID, String authToken){
         return joinGame(gameID, "", authToken);
     }
+
+
 }
