@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class ServerMessage {
     ServerMessageType serverMessageType;
-    String notification;
+    String notification, errorMessage;
 
     GameData game;
 
@@ -20,6 +20,14 @@ public class ServerMessage {
         LOAD_GAME,
         ERROR,
         NOTIFICATION
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public GameData getGame() {

@@ -14,8 +14,12 @@ import spark.Spark;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
+import java.util.ArrayList;
+
 @WebSocket
 public class Server {
+
+    static ArrayList<Session> sessions = new ArrayList<Session>();
 
     public int run(){ //default, run at port 8080
         return run(8080);
@@ -69,9 +73,20 @@ public class Server {
             //authenticate the auth first
             if(!DataAccess.isAuthValid(ugc.getAuthString())){
                 ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-                response.setNotification("ERROR: Invalid auth token");
+                response.setErrorMessage("ERROR: Invalid auth token");
                 session.getRemote().sendString(gson.toJson(response));
+                return;
             }
+            if(DataAccess.getGame(ugc.getGameID())==null){
+                ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                response.setErrorMessage("ERROR: Invalid gameID");
+                session.getRemote().sendString(gson.toJson(response));
+                return;
+            }
+
+            //add this as a valid session if not added
+            if(!sessions.contains(session))
+                sessions.add(session);
 
             switch(ugc.getCommandType()){
                 case JOIN_PLAYER:{
@@ -101,7 +116,7 @@ public class Server {
                 }
                 default:{
                     ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-                    response.setNotification("ERROR");
+                    response.setErrorMessage("ERROR");
                     session.getRemote().sendString(gson.toJson(response));
                 }
             }
