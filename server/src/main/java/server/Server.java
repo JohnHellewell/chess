@@ -66,7 +66,9 @@ public class Server {
         Gson gson = new Gson();
         try {
             UserGameCommand ugc = gson.fromJson(message, UserGameCommand.class);
-            session.getRemote().sendString("WebSocket response: " + "success!");
+            ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            response.setNotification("you joined the game");
+            session.getRemote().sendString(gson.toJson(response));
         }catch(Exception e){ //failed to interpret message
             String errorMsg = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.ERROR));
             session.getRemote().sendString(errorMsg);

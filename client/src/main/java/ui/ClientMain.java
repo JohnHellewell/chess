@@ -17,7 +17,7 @@ public class ClientMain {
     private static String username = "";
 
     private static int gameID = -1; //gameID of what should be displayed
-    private static ChessGame game = null;
+    public static ChessGame game = null;
 
     private enum playerType{WHITE, BLACK, SPECTATOR};
     private static playerType player =  playerType.SPECTATOR;
@@ -115,6 +115,11 @@ public class ClientMain {
                 }
             }
         }
+    }
+
+    public static void reloadBoard(ChessGame g){
+        game = g;
+        drawBoard();
     }
 
     private static void parseGamePlayInput(String[] input){
@@ -326,7 +331,7 @@ public class ClientMain {
         try{
             ServerFacade sf = new ServerFacade();
             sf.openWebSocket();
-            sf.joinGame(authToken, true);
+            sf.joinGame(authToken, args.length>2);
         }catch(Exception e){
             System.out.println("web socket connection failed");
             System.out.println(e.getMessage());

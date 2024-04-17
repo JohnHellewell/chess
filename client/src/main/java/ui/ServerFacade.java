@@ -4,6 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import ui.ListGamesResponse;
+import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.*;
@@ -31,11 +32,29 @@ public class ServerFacade extends Endpoint{
         session = container.connectToServer(this, uri);
 
         session.addMessageHandler(new MessageHandler.Whole<String>() {
-            public void onMessage(String message) { //change this later
-                System.out.println(message);
+            public void onMessage(String message) {
+                Gson gson = new Gson();
+                try{
+                    ServerMessage mes = gson.fromJson(message, ServerMessage.class);
+                    executeServerCommand(mes);
+
+                }catch(Exception e){
+                    System.out.println("Failed to interpret Server message: " + message);
+                }
             }
         });
     }
+
+    private void executeServerCommand(ServerMessage mes){
+        switch(mes.getServerMessageType()){
+            case ERROR -> { System.out.println("Server Error"); }
+            case NOTIFICATION -> { System.out.println(mes.getNotification());}
+            case LOAD_GAME -> { ClientMain.reloadBoard(mes.getGame().getGame());}
+            default -> {}
+        }
+    }
+
+
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
