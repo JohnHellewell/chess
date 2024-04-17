@@ -26,8 +26,7 @@ public class GetGamesHandler extends Handler{
             gameDataList.toArray(temp);
             String games = gson.toJson(temp, GameData[].class);
 
-            //String games = (new GetGamesService()).getGames(auth).toString();
-            //FIXME ^^ why am i using a .toString method?
+
 
 
             res.status(200);

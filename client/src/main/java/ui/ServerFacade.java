@@ -18,11 +18,11 @@ import java.net.URI;
 
 public class ServerFacade extends Endpoint{
 
-    public static int PORT = 8080;
+    public static int port = 8080;
     private Session session;
 
     public void openWebSocket() throws Exception{
-        URI uri = new URI("ws://localhost:" + PORT + "/connect");
+        URI uri = new URI("ws://localhost:" + port + "/connect");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         session = container.connectToServer(this, uri);
 
@@ -69,9 +69,9 @@ public class ServerFacade extends Endpoint{
     }
 
     private String getPlayerString(){
-        if(ClientMain.player== ClientMain.playerType.WHITE)
+        if(ClientMain.player== ClientMain.PlayerType.WHITE)
             return "WHITE";
-        else if (ClientMain.player== ClientMain.playerType.BLACK)
+        else if (ClientMain.player== ClientMain.PlayerType.BLACK)
             return "BLACK";
         return "";
 
@@ -84,9 +84,9 @@ public class ServerFacade extends Endpoint{
         UserGameCommand command;
         if(isPlayer){
             String player = "";
-            if(ClientMain.player== ClientMain.playerType.WHITE)
+            if(ClientMain.player== ClientMain.PlayerType.WHITE)
                 player = "WHITE";
-            else if (ClientMain.player== ClientMain.playerType.BLACK)
+            else if (ClientMain.player== ClientMain.PlayerType.BLACK)
                 player = "BLACK";
             command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.JOIN_PLAYER, player);
 
@@ -124,7 +124,7 @@ public class ServerFacade extends Endpoint{
 
     private static int deletePutCommand(String endpoint, String httpMethod, String authToken){ //temporary
         try {
-            URI uri = new URI("http://localhost:" + PORT + endpoint);
+            URI uri = new URI("http://localhost:" + port + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 
             connection.setReadTimeout(5000);
@@ -145,7 +145,7 @@ public class ServerFacade extends Endpoint{
 
     private static Map<String, String> postCommand(String endpoint, String httpMethod, Map<String, String> reqData, String authToken){ //creates http connection, sends Map of variables as json, returns response as Map of variables
         try {
-            URI uri = new URI("http://localhost:" + PORT + endpoint);
+            URI uri = new URI("http://localhost:" + port + endpoint);
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setReadTimeout(5000);
             connection.setRequestMethod(httpMethod);//register user
@@ -186,7 +186,7 @@ public class ServerFacade extends Endpoint{
                 // SERVER RETURNED AN HTTP ERROR
                 InputStream responseBody = connection.getErrorStream();
                 // Read and process error response body from InputStream ...
-                //FIXME add a way to display the error
+
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody));
                 String jsonResponse = reader.readLine();//store the json response
@@ -233,7 +233,7 @@ public class ServerFacade extends Endpoint{
 
     public static GameData[] listGames(String authToken){
         try {
-            URI uri = new URI("http://localhost:" + PORT + "/game");
+            URI uri = new URI("http://localhost:" + port + "/game");
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
 
             connection.setReadTimeout(5000);

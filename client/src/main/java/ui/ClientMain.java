@@ -3,11 +3,8 @@ package ui;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
-import com.google.gson.Gson;
 import model.GameData;
-import ui.DrawBoard;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 public class ClientMain {
@@ -21,8 +18,8 @@ public class ClientMain {
     public static int gameID = -1; //gameID of what should be displayed
     public static ChessGame game = null;
 
-    enum playerType{WHITE, BLACK, SPECTATOR};
-    public static playerType player =  playerType.SPECTATOR;
+    enum PlayerType {WHITE, BLACK, SPECTATOR};
+    public static PlayerType player =  PlayerType.SPECTATOR;
     public static void main(String[] args) {
         //var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         //System.out.println("♕ 240 Chess Client: " + piece);
@@ -253,7 +250,7 @@ public class ClientMain {
             if (gamePlay){ //gameplay menu
                 System.out.println("\tReDraw\t-redraw the chess board");
                 System.out.println("\tHighlight <SQUARE>\t-show all legal moves for a specified piece");
-                if(player == playerType.SPECTATOR){ //spectator options
+                if(player == PlayerType.SPECTATOR){ //spectator options
                     System.out.println("\tLeave\t-Leave the game");
                 } else { //player options
                     System.out.println("\tMove <START SQUARE> <END SQUARE>\t-move a piece");
@@ -327,15 +324,15 @@ public class ClientMain {
             if(args.length==2){
                 //spectate
                 message = ServerFacade.spectateGame(args[1], authToken);
-                player = playerType.SPECTATOR;
+                player = PlayerType.SPECTATOR;
                 gamePlay = true;
             } else { //length==3
                 message = ServerFacade.joinGame(args[1], args[2], authToken);
                 gamePlay = true;
                 if(args[2].equals("WHITE")){
-                    player = playerType.WHITE;
+                    player = PlayerType.WHITE;
                 } else {
-                    player = playerType.BLACK;
+                    player = PlayerType.BLACK;
                 }
             }
             System.out.println(message);
@@ -372,7 +369,7 @@ public class ClientMain {
     }
 
     private static DrawBoard.ORIENTATION getOri(){
-        if(player==playerType.BLACK)
+        if(player== PlayerType.BLACK)
             return DrawBoard.ORIENTATION.BLACK;
         else
             return DrawBoard.ORIENTATION.WHITE;

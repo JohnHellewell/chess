@@ -73,17 +73,6 @@ public class DataAccess {
                 try(var result = preparedStatement.executeQuery()){
                     if(result.next()){ //user already logged in; update their auth to a new one
 
-                        //return result.getString("authtoken");
-                        /*
-                        try (var updateStatement = conn.prepareStatement("UPDATE authdata SET authtoken = ? WHERE username = ?")) {
-                            updateStatement.setString(1, token);
-                            updateStatement.setString(2, username);
-                            updateStatement.executeUpdate();
-                            return token;
-                        }
-
-                         */
-
                         try (var updateStatement = conn.prepareStatement("DELETE FROM authdata WHERE username = ?")) {
                             updateStatement.setString(1, username);
                             updateStatement.executeUpdate();

@@ -163,29 +163,6 @@ public class Server {
             sendError(session, "Error: wrong team");
             return;
         }
-        /*
-        try {
-            String user = authToUsername(ugc.getAuthString());
-            if(ugc.getPlayer()==null){
-                sendError(session, "Error: wrong team");
-                return;
-            }
-
-            if (ugc.getPlayer().equals("WHITE") && gameData.getBlackUsername()!=null && user.equals(gameData.getBlackUsername())) {
-                sendError(session, "Error: wrong team");
-                return;
-            }
-            if (ugc.getPlayer().equals("BLACK") && gameData.getWhiteUsername()!=null && user.equals(gameData.getWhiteUsername())) {
-                sendError(session, "Error: wrong team");
-                return;
-            }
-        }catch(Exception e){
-            System.out.println("Error");
-        }
-
-         */
-
-
 
 
         //load game

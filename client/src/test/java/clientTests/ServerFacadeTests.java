@@ -17,7 +17,7 @@ public class ServerFacadeTests {
         var port = server.run(desiredPort);
         System.out.println("Started test HTTP server on " + port);
 
-        ServerFacade.PORT = desiredPort;
+        ServerFacade.port = desiredPort;
 
 
     }
