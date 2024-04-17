@@ -1,24 +1,18 @@
 package ui;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
-import ui.ListGamesResponse;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.websocket.*;
 import java.net.URI;
-import java.util.Scanner;
-
-
 
 
 public class ServerFacade extends Endpoint{
@@ -48,7 +42,7 @@ public class ServerFacade extends Endpoint{
     private void executeServerCommand(ServerMessage mes){
         switch(mes.getServerMessageType()){
             case ERROR -> { System.out.println("Server Error"); }
-            case NOTIFICATION -> { System.out.println(mes.getNotification());}
+            case NOTIFICATION -> { System.out.println(mes.getMessage());}
             case LOAD_GAME -> { ClientMain.reloadBoard(mes.getGame().getGame());}
             default -> {}
         }

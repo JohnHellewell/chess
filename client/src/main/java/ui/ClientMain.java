@@ -13,10 +13,10 @@ public class ClientMain {
     private static boolean loggedIn = false;
     private static boolean gamePlay = false;
 
-    private static String authToken = "";
+    public static String authToken = "";
     private static String username = "";
 
-    private static int gameID = -1; //gameID of what should be displayed
+    public static int gameID = -1; //gameID of what should be displayed
     public static ChessGame game = null;
 
     private enum playerType{WHITE, BLACK, SPECTATOR};

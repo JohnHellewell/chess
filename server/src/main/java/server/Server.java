@@ -5,11 +5,7 @@ import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import spark.*;
 import org.eclipse.jetty.websocket.api.annotations.*;
-import spark.Spark;
-import org.eclipse.jetty.websocket.api.annotations.*;
-import org.eclipse.jetty.websocket.api.*;
 import spark.Spark;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
@@ -20,6 +16,7 @@ import java.util.ArrayList;
 public class Server {
 
     static ArrayList<Session> sessions = new ArrayList<Session>();
+
 
     public int run(){ //default, run at port 8080
         return run(8080);
@@ -95,14 +92,11 @@ public class Server {
                     response.setGame(DataAccess.getGame(ugc.getGameID()));
                     session.getRemote().sendString(gson.toJson(response));
 
-
-
+                    sendNotification("player joined the game", session);
                     break;
                 }
                 case JOIN_OBSERVER:{
-                    ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-                    response.setNotification("you joined the game");
-                    session.getRemote().sendString(gson.toJson(response));
+                    sendNotification("player joined the game", session);
                     break;
                 }
                 case LEAVE:{
@@ -128,6 +122,22 @@ public class Server {
             String errorMsg = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.ERROR));
             session.getRemote().sendString(errorMsg);
         }
+    }
+
+    private void sendNotification(String str, Session playerException){
+        Gson gson = new Gson();
+        ServerMessage mes = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        mes.setMessage(str);
+        for(Session s : sessions){
+            try {
+                if(!s.equals(playerException))
+                    s.getRemote().sendString(gson.toJson(mes));
+            } catch(Exception e){}
+        }
+    }
+
+    private String authToUsername(String auth){
+        return DataAccess.findUser(auth);
     }
 
 

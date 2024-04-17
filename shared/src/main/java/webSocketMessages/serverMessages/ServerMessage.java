@@ -12,11 +12,12 @@ import java.util.Objects;
  */
 public class ServerMessage {
     ServerMessageType serverMessageType;
-    String notification, errorMessage;
+    String message, errorMessage;
 
     GameData game;
 
     public enum ServerMessageType {
+
         LOAD_GAME,
         ERROR,
         NOTIFICATION
@@ -42,12 +43,12 @@ public class ServerMessage {
         this.serverMessageType = type;
     }
 
-    public void setNotification(String notification) {
-        this.notification = notification;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public String getNotification() {
-        return notification;
+    public String getMessage() {
+        return message;
     }
 
     public ServerMessageType getServerMessageType() {
