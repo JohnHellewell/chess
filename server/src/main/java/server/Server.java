@@ -1,6 +1,7 @@
 package server;
 
 import Handlers.*;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import model.GameData;
@@ -97,7 +98,7 @@ public class Server {
                     ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
                     response.setGame(DataAccess.getGame(ugc.getGameID()));
                     session.getRemote().sendString(gson.toJson(response));
-                    
+
                     sendNotificationAllExcept("player joined the game", session);
                     break;
                 }
@@ -105,6 +106,7 @@ public class Server {
                     break;
                 }
                 case MAKE_MOVE:{
+                    makeMove(session, ugc);
                     break;
                 }
                 case RESIGN:{
@@ -131,6 +133,17 @@ public class Server {
         String errorMsg = gson.toJson(msg);
 
         session.getRemote().sendString(errorMsg);
+    }
+
+    private void makeMove(Session session, UserGameCommand ugc)throws Exception{
+        //assume the player is correct
+        GameData gameData = DataAccess.getGame(ugc.getGameID());
+        ChessGame game = gameData.getGame();
+        game.makeMove(ugc.getMove());
+        gameData.setGame(game);
+        DataAccess.updateGame(ugc.getGameID(), gameData);
+
+        loadGameAll();
     }
 
     private void joinPlayer(Session session, UserGameCommand ugc) throws Exception{ //handles any attempts to join a game
@@ -193,6 +206,16 @@ public class Server {
                 if(!s.equals(playerException))
                     s.getRemote().sendString(gson.toJson(mes));
             } catch(Exception e){}
+        }
+    }
+
+    private void loadGameAll(){
+        Gson gson = new Gson();
+        ServerMessage mes = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        for(Session s : sessions){
+            try{
+                s.getRemote().sendString(gson.toJson(mes));
+            }catch(Exception e){}
         }
     }
 

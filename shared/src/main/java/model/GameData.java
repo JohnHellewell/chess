@@ -15,6 +15,10 @@ public class GameData {
         this.game = game;
     }
 
+    public void setGame(ChessGame game) {
+        this.game = game;
+    }
+
     public int getGameID() {
         return gameID;
     }

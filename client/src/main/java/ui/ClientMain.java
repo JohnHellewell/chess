@@ -1,6 +1,8 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import model.GameData;
 import ui.DrawBoard;
@@ -93,9 +95,8 @@ public class ClientMain {
                     help();
                     break;
                 }
-                case "QUIT": { //later, make sure to log out when this is called!
+                case "QUIT": {
                     System.exit(0);
-                    break; //i shouldn't need this line but i included it
                 }
                 case "REGISTER": { //logged out exclusive
                     register(input.split(" "));
@@ -137,6 +138,12 @@ public class ClientMain {
                 drawBoard();
                 break;
             }
+            case "MOVE":{
+                if(input.length!=3 || !verifySquare(input[1]) || !verifySquare(input[2])){
+                    unrecognizedCommand(input);
+                }
+                makeMove(input);
+            }
             case "HELP":{
                 help();
                 break;
@@ -144,25 +151,35 @@ public class ClientMain {
             case "QUIT":{
                 System.exit(0);
             }
-            default:{ //for player/spectator specific functions
-                if(player == playerType.SPECTATOR){
-                    switch(command){
-                        default: {
-                            unrecognizedCommand(new String[]{command});
-                            break;
-                        }
-                    }
-                } else { //player is black or white
-                    switch(command){
-                        default: {
-                            unrecognizedCommand(new String[]{command});
-                            break;
-                        }
-                    }
-                }
+            default:{
+                unrecognizedCommand(new String[]{command});
+                break;
             }
         }
 
+    }
+
+    private static void makeMove(String[] input){
+        //squares have been verified
+        ChessPosition start = stringToCP(input[1]);
+        ChessPosition end = stringToCP(input[2]);
+        ChessMove move = new ChessMove(start, end, null);
+
+        try{
+            ServerFacade sf = new ServerFacade();
+            sf.openWebSocket();
+            sf.makeMove(authToken, gameID, move);
+        }catch(Exception e){
+            System.out.println("web socket connection failed");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static ChessPosition stringToCP(String str){ //might not work
+        int row, col;
+        col = (int)(str.charAt(0)-'a')+1;
+        row = (int)(str.charAt(1)-'1')+1;
+        return new ChessPosition(row, col);
     }
 
 

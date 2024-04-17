@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import model.GameData;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -58,6 +59,25 @@ public class ServerFacade extends Endpoint{
     private void send(String msg) throws Exception {
         session.getBasicRemote().sendText(msg);
     }
+
+    public void makeMove(String auth, int gameID, ChessMove move)throws Exception{
+        Gson gson = new Gson();
+        UserGameCommand command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.MAKE_MOVE, getPlayerString());
+        command.setMove(move);
+
+        send(gson.toJson(command));
+    }
+
+    private String getPlayerString(){
+        if(ClientMain.player== ClientMain.playerType.WHITE)
+            return "WHITE";
+        else if (ClientMain.player== ClientMain.playerType.BLACK)
+            return "BLACK";
+        return "";
+
+
+    }
+
 
     public void joinGame(String auth, int gameID, boolean isPlayer)throws Exception{
         Gson gson = new Gson();
