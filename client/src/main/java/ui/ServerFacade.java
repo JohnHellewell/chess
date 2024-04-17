@@ -4,6 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import ui.ListGamesResponse;
+import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -41,8 +42,20 @@ public class ServerFacade extends Endpoint{
         //System.out.println("Web Socket Opened");
     }
 
-    public void send(String msg) throws Exception {
+    private void send(String msg) throws Exception {
         session.getBasicRemote().sendText(msg);
+    }
+
+    public void joinGame(String auth, boolean isPlayer)throws Exception{
+        Gson gson = new Gson();
+        UserGameCommand command;
+        if(isPlayer){
+            command = new UserGameCommand(auth, UserGameCommand.CommandType.JOIN_PLAYER);
+        } else {
+            command = new UserGameCommand(auth, UserGameCommand.CommandType.JOIN_OBSERVER);
+        }
+
+        send(gson.toJson(command));
     }
 
 

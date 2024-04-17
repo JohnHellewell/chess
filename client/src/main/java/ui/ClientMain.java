@@ -131,6 +131,13 @@ public class ClientMain {
                 drawBoard();
                 break;
             }
+            case "HELP":{
+                help();
+                break;
+            }
+            case "QUIT":{
+                System.exit(0);
+            }
             default:{ //for player/spectator specific functions
                 if(player == playerType.SPECTATOR){
                     switch(command){
@@ -319,6 +326,7 @@ public class ClientMain {
         try{
             ServerFacade sf = new ServerFacade();
             sf.openWebSocket();
+            sf.joinGame(authToken, true);
         }catch(Exception e){
             System.out.println("web socket connection failed");
             System.out.println(e.getMessage());

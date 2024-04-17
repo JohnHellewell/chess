@@ -1,6 +1,7 @@
 package server;
 
 import Handlers.*;
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.*;
@@ -9,6 +10,8 @@ import spark.Spark;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import spark.Spark;
+import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.userCommands.UserGameCommand;
 
 @WebSocket
 public class Server {
@@ -59,7 +62,15 @@ public class Server {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
-        session.getRemote().sendString("WebSocket response: " + message);
+        //session.getRemote().sendString("WebSocket response: " + message); //sends message back to client!
+        Gson gson = new Gson();
+        try {
+            UserGameCommand ugc = gson.fromJson(message, UserGameCommand.class);
+            session.getRemote().sendString("WebSocket response: " + "success!");
+        }catch(Exception e){ //failed to interpret message
+            String errorMsg = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.ERROR));
+            session.getRemote().sendString(errorMsg);
+        }
     }
 
     public void stop() {
