@@ -65,13 +65,13 @@ public class ServerFacade extends Endpoint{
         session.getBasicRemote().sendText(msg);
     }
 
-    public void joinGame(String auth, boolean isPlayer)throws Exception{
+    public void joinGame(String auth, int gameID, boolean isPlayer)throws Exception{
         Gson gson = new Gson();
         UserGameCommand command;
         if(isPlayer){
-            command = new UserGameCommand(auth, UserGameCommand.CommandType.JOIN_PLAYER);
+            command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.JOIN_PLAYER);
         } else {
-            command = new UserGameCommand(auth, UserGameCommand.CommandType.JOIN_OBSERVER);
+            command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.JOIN_OBSERVER);
         }
 
         send(gson.toJson(command));

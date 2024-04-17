@@ -2,6 +2,7 @@ package server;
 
 import Handlers.*;
 import com.google.gson.Gson;
+import dataAccess.DataAccess;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.*;
@@ -62,21 +63,64 @@ public class Server {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
-        //session.getRemote().sendString("WebSocket response: " + message); //sends message back to client!
         Gson gson = new Gson();
         try {
             UserGameCommand ugc = gson.fromJson(message, UserGameCommand.class);
-            ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            response.setNotification("you joined the game");
-            session.getRemote().sendString(gson.toJson(response));
+            //authenticate the auth first
+            if(!DataAccess.isAuthValid(ugc.getAuthString())){
+                ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                response.setNotification("ERROR: Invalid auth token");
+                session.getRemote().sendString(gson.toJson(response));
+            }
+
+            switch(ugc.getCommandType()){
+                case JOIN_PLAYER:{
+                    //load game
+                    ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+                    response.setGame(DataAccess.getGame(ugc.getGameID()));
+                    session.getRemote().sendString(gson.toJson(response));
+
+
+
+                    break;
+                }
+                case JOIN_OBSERVER:{
+                    ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+                    response.setNotification("you joined the game");
+                    session.getRemote().sendString(gson.toJson(response));
+                    break;
+                }
+                case LEAVE:{
+                    break;
+                }
+                case MAKE_MOVE:{
+                    break;
+                }
+                case RESIGN:{
+                    break;
+                }
+                default:{
+                    ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                    response.setNotification("ERROR");
+                    session.getRemote().sendString(gson.toJson(response));
+                }
+            }
+
+
+
+
         }catch(Exception e){ //failed to interpret message
             String errorMsg = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.ERROR));
             session.getRemote().sendString(errorMsg);
         }
     }
 
+
+
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
     }
+
+
 }

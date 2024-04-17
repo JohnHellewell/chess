@@ -119,6 +119,7 @@ public class ClientMain {
 
     public static void reloadBoard(ChessGame g){
         game = g;
+        System.out.println("");
         drawBoard();
     }
 
@@ -331,7 +332,7 @@ public class ClientMain {
         try{
             ServerFacade sf = new ServerFacade();
             sf.openWebSocket();
-            sf.joinGame(authToken, args.length>2);
+            sf.joinGame(authToken, gameID, args.length>2);
         }catch(Exception e){
             System.out.println("web socket connection failed");
             System.out.println(e.getMessage());

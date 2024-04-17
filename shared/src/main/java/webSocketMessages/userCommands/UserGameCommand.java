@@ -10,7 +10,8 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    public UserGameCommand(String authToken, CommandType command) {
+    public UserGameCommand(String authToken, int gameID, CommandType command) {
+        this.gameID = gameID;
         this.authToken = authToken;
         this.commandType = command;
     }
@@ -23,9 +24,15 @@ public class UserGameCommand {
         RESIGN
     }
 
+    public int getGameID() {
+        return gameID;
+    }
+
     protected CommandType commandType;
 
     private final String authToken;
+
+    private int gameID;
 
     public String getAuthString() {
         return authToken;
@@ -34,6 +41,8 @@ public class UserGameCommand {
     public CommandType getCommandType() {
         return this.commandType;
     }
+
+
 
     @Override
     public boolean equals(Object o) {
