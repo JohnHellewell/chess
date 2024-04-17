@@ -25,11 +25,11 @@ public class ServerFacade extends Endpoint{
     private Session session;
 
     public void openWebSocket() throws Exception{
-        URI uri = new URI("ws://localhost:8080/connect");
+        URI uri = new URI("ws://localhost:" + PORT + "/connect");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        this.session = container.connectToServer(this, uri);
+        session = container.connectToServer(this, uri);
 
-        this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+        session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) { //change this later
                 System.out.println(message);
             }
@@ -38,14 +38,16 @@ public class ServerFacade extends Endpoint{
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-        System.out.println("Web Socket Opened");
+        //System.out.println("Web Socket Opened");
     }
 
-    public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
+    public void send(String msg) throws Exception {
+        session.getBasicRemote().sendText(msg);
+    }
 
 
     //***** end of websocket code
-    
+
     public static boolean clear(){
         int code = deletePutCommand("/db", "DELETE", null);
         if(code==200){

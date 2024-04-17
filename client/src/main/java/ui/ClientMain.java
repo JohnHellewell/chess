@@ -253,6 +253,15 @@ public class ClientMain {
                 updateGame(Integer.parseInt(args[1]));
             }
         }
+
+        //establish web socket connection
+        try{
+            ServerFacade sf = new ServerFacade();
+            sf.openWebSocket();
+        }catch(Exception e){
+            System.out.println("web socket connection failed");
+            System.out.println(e.getMessage());
+        }
     }
 
 
