@@ -11,12 +11,16 @@ import java.util.Scanner;
 public class ClientMain {
 
     private static boolean loggedIn = false;
+    private static boolean gamePlay = false;
 
     private static String authToken = "";
     private static String username = "";
 
     private static int gameID = -1; //gameID of what should be displayed
     private static ChessGame game = null;
+
+    private enum playerType{WHITE, BLACK, SPECTATOR};
+    private static playerType player =  playerType.SPECTATOR;
     public static void main(String[] args) {
         //var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         //System.out.println("♕ 240 Chess Client: " + piece);
@@ -177,12 +181,23 @@ public class ClientMain {
         if(!loggedIn) { //Logged OUT menu
             System.out.println("\tregister <USERNAME> <PASSWORD> <EMAIL>\t-create a new account");
             System.out.println("\tlogin <USERNAME> <PASSWORD>\t-login into an existing account");
-        } else { //Logged IN menu
-            System.out.println("\tcreate <NAME>\t-create a new game");
-            System.out.println("\tjoin <GAME ID> [\"WHITE\"|\"BLACK\"|blank]\t-join a game as white, black, or spectator");
-            System.out.println("\tlist\t-list all games");
-            System.out.println("\tobserve <GAME ID>\t-spectate a game");
-            System.out.println("\tlogout\t-logout");
+        } else {
+            if (gamePlay){ //gameplay menu
+                System.out.println("\tReDraw\t-redraw the chess board");
+                System.out.println("\tHighlight <SQUARE>\t-show all legal moves for a specified piece");
+                if(player == playerType.SPECTATOR){ //spectator options
+                    System.out.println("\tLeave\t-Leave the game");
+                } else { //player options
+                    System.out.println("\tMove <START SQUARE> <END SQUARE>\t-move a piece");
+                    System.out.println("\tResign\t-Resign the game");
+                }
+            } else { //Logged IN menu
+                System.out.println("\tcreate <NAME>\t-create a new game");
+                System.out.println("\tjoin <GAME ID> [\"WHITE\"|\"BLACK\"|blank]\t-join a game as white, black, or spectator");
+                System.out.println("\tlist\t-list all games");
+                System.out.println("\tobserve <GAME ID>\t-spectate a game");
+                System.out.println("\tlogout\t-logout");
+            }
         }
         System.out.println("\thelp\t-display a list of commands");
         System.out.println("\tquit\t-close chess program");
@@ -244,8 +259,16 @@ public class ClientMain {
             if(args.length==2){
                 //spectate
                 message = ServerFacade.spectateGame(args[1], authToken);
+                player = playerType.SPECTATOR;
+                gamePlay = true;
             } else { //length==3
                 message = ServerFacade.joinGame(args[1], args[2], authToken);
+                gamePlay = true;
+                if(args[2].equals("WHITE")){
+                    player = playerType.WHITE;
+                } else {
+                    player = playerType.BLACK;
+                }
             }
             System.out.println(message);
 
