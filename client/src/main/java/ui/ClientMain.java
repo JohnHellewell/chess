@@ -50,37 +50,41 @@ public class ClientMain {
             command = input.substring(0, input.indexOf(' '));
         }
         if(loggedIn){
-            switch (command.toUpperCase()) {
-                case "HELP": {
-                    help();
-                    break;
-                }
-                case "QUIT": {
-                    System.exit(0);
-                }
-                case "CREATE":{ //logged in exclusive
-                    create(input.split(" "));
-                    break;
-                }
-                case "LOGOUT":{//logged in exclusive
-                    logout();
-                    break;
-                }
-                case "LIST":{//logged in exclusive
-                    list(-1);
-                    break;
-                }
-                case "JOIN":{
-                    join(input.split(" "));
-                    break;
-                }
-                case "CLEAR":{
-                    ServerFacade.clear();
-                    break;
-                }
-                default: {
-                    unrecognizedCommand(new String[]{command});
-                    break;
+            if(gamePlay)
+                parseGamePlayInput(input.split(" "));
+            else{
+                switch (command.toUpperCase()) {
+                    case "HELP": {
+                        help();
+                        break;
+                    }
+                    case "QUIT": {
+                        System.exit(0);
+                    }
+                    case "CREATE": { //logged in exclusive
+                        create(input.split(" "));
+                        break;
+                    }
+                    case "LOGOUT": {//logged in exclusive
+                        logout();
+                        break;
+                    }
+                    case "LIST": {//logged in exclusive
+                        list(-1);
+                        break;
+                    }
+                    case "JOIN": {
+                        join(input.split(" "));
+                        break;
+                    }
+                    case "CLEAR": {
+                        ServerFacade.clear();
+                        break;
+                    }
+                    default: {
+                        unrecognizedCommand(new String[]{command});
+                        break;
+                    }
                 }
             }
         } else {
@@ -111,9 +115,41 @@ public class ClientMain {
                 }
             }
         }
-
-
     }
+
+    private static void parseGamePlayInput(String[] input){
+        String command = input[0].toUpperCase();
+
+        if(player == playerType.SPECTATOR){
+            switch(command){
+                case "HIGHLIGHT":{
+                    if(input.length!=2 || !verifySquare(input[1]))
+                        unrecognizedCommand(input);
+                    //correct command format, and the square is a valid square
+                    drawBoard(input[1]);
+                }
+                default: {
+                    unrecognizedCommand(new String[]{command});
+                    break;
+                }
+            }
+        } else { //player is black or white
+            switch(command){
+                case "HIGHLIGHT":{
+                    if(input.length!=2 || !verifySquare(input[1]))
+                        unrecognizedCommand(input);
+                    //correct command format, and the square is a valid square
+                    drawBoard(input[1]);
+                    break;
+                }
+                default: {
+                    unrecognizedCommand(new String[]{command});
+                    break;
+                }
+            }
+        }
+    }
+
 
     private static void unrecognizedCommand(String[] str){
         String temp = "";
@@ -295,6 +331,31 @@ public class ClientMain {
     }
 
     private static void drawBoard(){
-        DrawBoard.drawBoard(game.getBoard(), DrawBoard.ORIENTATION.BOTH);
+        DrawBoard.drawBoard(game.getBoard(), getOri());
+    }
+
+    private static void drawBoard(String square){
+        DrawBoard.drawBoard(game.getBoard(), getOri(), square);
+    }
+
+    private static DrawBoard.ORIENTATION getOri(){
+        if(player==playerType.BLACK)
+            return DrawBoard.ORIENTATION.BLACK;
+        else
+            return DrawBoard.ORIENTATION.WHITE;
+    }
+
+
+    private static boolean verifySquare(String square){
+        square = square.toLowerCase().trim();
+        if(square.length()!=2)
+            return false;
+        if(square.charAt(0)<'a' || square.charAt(0)>'h')
+            return false;
+        if(square.charAt(1)<'1' || square.charAt(1)>'8')
+            return false;
+
+        //valid square has been called
+        return true;
     }
 }

@@ -1,10 +1,8 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class DrawBoard {
@@ -15,6 +13,10 @@ public class DrawBoard {
     final static int[] forwRows = {1, 2, 3, 4, 5, 6, 7, 8};
     final static int[] revRows = {8, 7, 6, 5, 4, 3, 2, 1};
 
+    static boolean highlight = false;
+    static String pos;
+
+
     final static Map<ChessPiece.PieceType, String> icons = Map.of(
             ChessPiece.PieceType.KING, " K ",
             ChessPiece.PieceType.ROOK, " R ",
@@ -23,6 +25,12 @@ public class DrawBoard {
             ChessPiece.PieceType.PAWN, " P ",
             ChessPiece.PieceType.KNIGHT, " N "
     );
+
+    public static void drawBoard(ChessBoard board, ORIENTATION ori, String square){
+        highlight = true;
+        pos = square;
+        drawBoard(board, ori);
+    }
 
     public static void drawBoard(ChessBoard board, ORIENTATION ori){
         if(ori==ORIENTATION.BOTH){
@@ -52,7 +60,7 @@ public class DrawBoard {
 
 
         for(int i=0; i<8; i++){
-            setTileColor(row, i);
+            setTileColor(row, i, board);
             ChessPosition pos;
             if(ori==ORIENTATION.WHITE) {
                 pos = new ChessPosition(row, i + 1);
@@ -136,13 +144,36 @@ public class DrawBoard {
         System.out.print("\n");
     }
 
-    private static void setTileColor(int row, int col){ //doesn't matter if the row and col are mixed up
-        if((row+col)%2==0){ //white tile
-            System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        } else { //black
-            System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+    private static void setTileColor(int row, int col, ChessBoard board){
+        if(highlightTile(row, col, board)){
+            System.out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+        } else {
+            if ((row + col) % 2 == 0) { //white tile
+                System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+            } else { //black
+                System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+            }
         }
     }
+
+    private static boolean highlightTile(int row, int col, ChessBoard board){
+        if(!highlight)
+            return false;
+        //highlight tiles is turned on
+        ChessPosition temp = new ChessPosition( (int)(pos.charAt(1)-'1')+1 , (int)(pos.charAt(0)-'a')+1);//position of the piece specified in the string 'pos'
+        if(board.getPiece(temp)!=null) {
+            ArrayList<ChessMove> validMoves  = board.getMoves(temp);
+
+            for(ChessMove move : validMoves){
+                if(move.getEndPosition().getRow()==row && move.getEndPosition().getColumn()-1==col)
+                    return true;
+            }
+            return false;
+        } else
+            return false;
+    }
+
+
 
     private static void resetColors(){
         //set bg to black and txt to white
