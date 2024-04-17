@@ -3,6 +3,7 @@ package server;
 import Handlers.*;
 import com.google.gson.Gson;
 import dataAccess.DataAccess;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.api.annotations.*;
@@ -11,12 +12,14 @@ import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 @WebSocket
 public class Server {
 
     static ArrayList<Session> sessions = new ArrayList<Session>();
-
+    Gson gson = new Gson();
+    //Map<Integer, GamePlayers> games;
 
     public int run(){ //default, run at port 8080
         return run(8080);
@@ -64,7 +67,6 @@ public class Server {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
-        Gson gson = new Gson();
         try {
             UserGameCommand ugc = gson.fromJson(message, UserGameCommand.class);
             //authenticate the auth first
@@ -85,18 +87,18 @@ public class Server {
             if(!sessions.contains(session))
                 sessions.add(session);
 
+
             switch(ugc.getCommandType()){
                 case JOIN_PLAYER:{
-                    //load game
-                    ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-                    response.setGame(DataAccess.getGame(ugc.getGameID()));
-                    session.getRemote().sendString(gson.toJson(response));
-
-                    sendNotification("player joined the game", session);
+                    joinPlayer(session, ugc);
                     break;
                 }
                 case JOIN_OBSERVER:{
-                    sendNotification("player joined the game", session);
+                    ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+                    response.setGame(DataAccess.getGame(ugc.getGameID()));
+                    session.getRemote().sendString(gson.toJson(response));
+                    
+                    sendNotificationAllExcept("player joined the game", session);
                     break;
                 }
                 case LEAVE:{
@@ -119,12 +121,70 @@ public class Server {
 
 
         }catch(Exception e){ //failed to interpret message
-            String errorMsg = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.ERROR));
-            session.getRemote().sendString(errorMsg);
+            sendError(session, "Error: "+e.getMessage());
         }
     }
 
-    private void sendNotification(String str, Session playerException){
+    private void sendError(Session session, String str)throws Exception{
+        ServerMessage msg = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+        msg.setErrorMessage(str);
+        String errorMsg = gson.toJson(msg);
+
+        session.getRemote().sendString(errorMsg);
+    }
+
+    private void joinPlayer(Session session, UserGameCommand ugc) throws Exception{ //handles any attempts to join a game
+        //check that the spot is not taken by another player
+        GameData gameData = DataAccess.getGame(ugc.getGameID());
+        if(gameData==null){
+            sendError(session, "Error: invalid game");
+            return;
+        }
+        if((gameData.getBlackUsername()!=null && !gameData.getBlackUsername().equals(authToUsername(ugc.getAuthString()))) &&
+                (gameData.getWhiteUsername()!=null && !gameData.getWhiteUsername().equals(authToUsername(ugc.getAuthString())))){
+            sendError(session, "Error: already taken");
+            return;
+        }
+        if(gameData.getWhiteUsername()!=null && gameData.getBlackUsername()!=null &&
+                gameData.getBlackUsername().equals(gameData.getWhiteUsername())){
+            sendError(session, "Error: wrong team");
+            return;
+        }
+        /*
+        try {
+            String user = authToUsername(ugc.getAuthString());
+            if(ugc.getPlayer()==null){
+                sendError(session, "Error: wrong team");
+                return;
+            }
+
+            if (ugc.getPlayer().equals("WHITE") && gameData.getBlackUsername()!=null && user.equals(gameData.getBlackUsername())) {
+                sendError(session, "Error: wrong team");
+                return;
+            }
+            if (ugc.getPlayer().equals("BLACK") && gameData.getWhiteUsername()!=null && user.equals(gameData.getWhiteUsername())) {
+                sendError(session, "Error: wrong team");
+                return;
+            }
+        }catch(Exception e){
+            System.out.println("Error");
+        }
+
+         */
+
+
+
+
+        //load game
+        ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        response.setGame(DataAccess.getGame(ugc.getGameID()));
+        session.getRemote().sendString(gson.toJson(response));
+
+        sendNotificationAllExcept("player joined the game", session);
+    }
+
+
+    private void sendNotificationAllExcept(String str, Session playerException){
         Gson gson = new Gson();
         ServerMessage mes = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
         mes.setMessage(str);

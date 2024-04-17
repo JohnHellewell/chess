@@ -63,9 +63,15 @@ public class ServerFacade extends Endpoint{
         Gson gson = new Gson();
         UserGameCommand command;
         if(isPlayer){
-            command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.JOIN_PLAYER);
+            String player = "";
+            if(ClientMain.player== ClientMain.playerType.WHITE)
+                player = "WHITE";
+            else if (ClientMain.player== ClientMain.playerType.BLACK)
+                player = "BLACK";
+            command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.JOIN_PLAYER, player);
+
         } else {
-            command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.JOIN_OBSERVER);
+            command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.JOIN_OBSERVER, null);
         }
 
         send(gson.toJson(command));

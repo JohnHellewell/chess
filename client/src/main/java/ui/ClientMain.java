@@ -19,8 +19,8 @@ public class ClientMain {
     public static int gameID = -1; //gameID of what should be displayed
     public static ChessGame game = null;
 
-    private enum playerType{WHITE, BLACK, SPECTATOR};
-    private static playerType player =  playerType.SPECTATOR;
+    enum playerType{WHITE, BLACK, SPECTATOR};
+    public static playerType player =  playerType.SPECTATOR;
     public static void main(String[] args) {
         //var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         //System.out.println("♕ 240 Chess Client: " + piece);
