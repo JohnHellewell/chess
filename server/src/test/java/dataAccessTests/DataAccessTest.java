@@ -54,5 +54,37 @@ class DataAccessTest {
         Assertions.assertEquals(-1, DataAccess.createGame("duck"));
     }
 
+    @Test
+    public void getGamesTestA(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("John","123", "john@gmail.com");
+        int id = DataAccess.createGame("duck");
+        Assertions.assertEquals(id, DataAccess.getGames().get(0).getGameID());
+    }
+
+    @Test
+    public void getGamesTestB(){ //check that it returns nothing
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("John","123", "john@gmail.com");
+        Assertions.assertEquals(0, DataAccess.getGames().size());
+    }
+
+    @Test
+    public void getGamesTestC(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("John","123", "john@gmail.com");
+        int id = DataAccess.createGame("duck");
+        DataAccess.createGame("goose");
+        Assertions.assertEquals(2, DataAccess.getGames().size());
+    }
+
+    @Test
+    public void getGamesTestD(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("John","123", "john@gmail.com");
+        int id = DataAccess.createGame("duck");
+        int id2 = DataAccess.createGame("goose");
+        Assertions.assertEquals(id2, DataAccess.getGames().get(1).getGameID());
+    }
 
 }
