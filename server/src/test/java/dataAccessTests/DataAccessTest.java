@@ -87,4 +87,22 @@ class DataAccessTest {
         Assertions.assertEquals(id2, DataAccess.getGames().get(1).getGameID());
     }
 
+    @Test
+    public void logoutTestA(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("John","123", "john@gmail.com");
+        DataAccess.logout(token);
+        Assertions.assertFalse(DataAccess.isAuthValid(token));
+    }
+    
+    @Test
+    public void logoutTestB(){
+        DataAccess.clearAll();
+        String tokenA = DataAccess.addUser("John","123", "john@gmail.com");
+        String tokenB = DataAccess.addUser("Nathan", "123", "nathan@gmail.com");
+        DataAccess.logout(tokenB);
+        Assertions.assertTrue(DataAccess.isAuthValid(tokenA));
+        Assertions.assertFalse(DataAccess.isAuthValid(tokenB));
+    }
+
 }
