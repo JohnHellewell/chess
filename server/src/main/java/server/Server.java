@@ -19,6 +19,7 @@ import java.util.Map;
 public class Server {
 
     static ArrayList<Session> sessions = new ArrayList<Session>();
+    static ArrayList<Integer> completedGames = new ArrayList<Integer>();
     Gson gson = new Gson();
     //Map<Integer, GamePlayers> games;
 
@@ -110,6 +111,7 @@ public class Server {
                     break;
                 }
                 case RESIGN:{
+                    resign(session, ugc);
                     break;
                 }
                 default:{
@@ -126,6 +128,34 @@ public class Server {
             sendError(session, "Error: "+e.getMessage());
         }
     }
+
+    private void resign(Session session, UserGameCommand ugc)throws Exception{
+        //check that user is in the game
+        int gameID = ugc.getGameID();
+        GameData gd = DataAccess.getGame(gameID);
+        ChessGame game = gd.getGame();
+        String user = DataAccess.findUser(ugc.getAuthString());
+        String player = "";
+        if(gd.getWhiteUsername()!=null && gd.getWhiteUsername().equals(user))
+            player="WHITE";
+        if(gd.getBlackUsername()!=null && gd.getBlackUsername().equals(user))
+            player = "BLACK";
+        if(player.length()==0) {//observer
+            sendError(session, "Error: not a player");
+            return;
+        }
+
+        for(int i : completedGames){
+            if(i == gameID){
+                sendError(session, "Error: game already over");
+                return;
+            }
+        }
+
+        completedGames.add(gameID);
+
+    }
+
 
     private void sendError(Session session, String str)throws Exception{
         ServerMessage msg = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
@@ -170,6 +200,12 @@ public class Server {
 
         loadGameAll(gameData);
         sendNotificationAllExcept("player made a move", session);
+
+        //look for checkmate
+        if (game.isInCheckmate(ChessGame.TeamColor.BLACK) || game.isInCheckmate(ChessGame.TeamColor.WHITE)){
+            //checkmate!
+            sendNotificationAllExcept("CHECKMATE!", null);
+        }
     }
 
     private void joinPlayer(Session session, UserGameCommand ugc) throws Exception{ //handles any attempts to join a game

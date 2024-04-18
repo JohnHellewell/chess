@@ -65,7 +65,7 @@ public class DrawBoard {
 
 
         for(int i=0; i<8; i++){
-            setTileColor(row, i, board);
+            setTileColor(row, i, board, ori);
             ChessPosition pos;
             if(ori==ORIENTATION.WHITE) {
                 pos = new ChessPosition(row, i + 1);
@@ -149,8 +149,8 @@ public class DrawBoard {
         System.out.print("\n");
     }
 
-    private static void setTileColor(int row, int col, ChessBoard board){
-        if(highlightTile(row, col, board)){
+    private static void setTileColor(int row, int col, ChessBoard board, ORIENTATION ori){
+        if(highlightTile(row, col, board, ori)){
             System.out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
         } else {
             if ((row + col) % 2 == 0) { //white tile
@@ -161,11 +161,17 @@ public class DrawBoard {
         }
     }
 
-    private static boolean highlightTile(int row, int col, ChessBoard board){
+    private static boolean highlightTile(int row, int col, ChessBoard board, ORIENTATION ori){
         if(!highlight)
             return false;
         //highlight tiles is turned on
-        ChessPosition temp = new ChessPosition( (int)(pos.charAt(1)-'1')+1 , (int)(pos.charAt(0)-'a')+1);//position of the piece specified in the string 'pos'
+
+        ChessPosition temp;
+        if(ori==ORIENTATION.WHITE)
+            temp = new ChessPosition( (int)(pos.charAt(1)-'1')+1 , (int)(pos.charAt(0)-'a')+1);//position of the piece specified in the string 'pos'
+        else
+            temp = new ChessPosition( ((int)(pos.charAt(1)-'1')+1) , 9-((int)(pos.charAt(0)-'a')+1));
+
         if(board.getPiece(temp)!=null) {
             ArrayList<ChessMove> validMoves  = board.getMoves(temp);
 

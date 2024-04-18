@@ -119,6 +119,8 @@ public class ClientMain {
         game = g;
         System.out.println("");
         drawBoard();
+        System.out.println("");
+        drawBoard();
     }
 
     private static void parseGamePlayInput(String[] input){

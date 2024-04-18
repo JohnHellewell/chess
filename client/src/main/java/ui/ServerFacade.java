@@ -44,7 +44,8 @@ public class ServerFacade extends Endpoint{
         switch(mes.getServerMessageType()){
             case ERROR -> { System.out.println("Server Error"); }
             case NOTIFICATION -> { System.out.println(mes.getMessage());}
-            case LOAD_GAME -> { ClientMain.reloadBoard(mes.getGame().getGame());}
+            case LOAD_GAME -> {
+                ClientMain.reloadBoard(mes.getGame().getGame());}
             default -> {}
         }
     }
