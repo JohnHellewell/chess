@@ -24,11 +24,34 @@ class DataAccessTest {
     }
 
     @Test
-    public void isAuthValidTest(){
+    public void isAuthValidTestA(){
         DataAccess.clearAll();
         String token = DataAccess.addUser("John","123", "john@gmail.com");
-        Assertions.assertFalse(DataAccess.isAuthValid("duck"));
+
         Assertions.assertTrue(DataAccess.isAuthValid(token));
+    }
+
+    @Test
+    public void isAuthValidTestB(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("John","123", "john@gmail.com");
+
+        Assertions.assertFalse(DataAccess.isAuthValid("fake token"));
+    }
+
+    @Test
+    public void createGameTestA(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("John","123", "john@gmail.com");
+        Assertions.assertEquals(4, ("" + (DataAccess.createGame("duck"))).length());
+    }
+
+    @Test
+    public void createGameTestB(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("John","123", "john@gmail.com");
+        DataAccess.createGame("duck");
+        Assertions.assertEquals(-1, DataAccess.createGame("duck"));
     }
 
 
