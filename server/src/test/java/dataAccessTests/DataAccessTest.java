@@ -9,6 +9,8 @@ import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.crypto.Data;
+
 class DataAccessTest {
 
     @Test
@@ -37,6 +39,15 @@ class DataAccessTest {
 
         Assertions.assertNull(token);
     }
+
+    @Test
+    public void loginTestA(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("nathan","123", "john@gmail.com");
+        DataAccess.logout(token);
+        Assertions.assertNotEquals(token, DataAccess.login("nathan"));
+    }
+
 
     @Test
     public void isAuthValidTestA(){
