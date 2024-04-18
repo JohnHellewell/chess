@@ -1,6 +1,11 @@
 package dataAccessTests;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import dataAccess.DataAccess;
+import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -127,6 +132,43 @@ class DataAccessTest {
         DataAccess.clearAll();
         String tokenA = DataAccess.addUser("John","123", "john@gmail.com");
         Assertions.assertNotEquals(DataAccess.findUser("fake token"), "John");
+    }
+
+    @Test
+    public void updateGameTestA(){
+        DataAccess.clearAll();
+        String tokenA = DataAccess.addUser("John","123", "john@gmail.com");
+        int gameID = DataAccess.createGame("duck");
+        GameData gd = DataAccess.getGame(gameID);
+        ChessGame game = gd.getGame();
+        game.resetBoard();
+        try{
+        game.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null));
+        }
+        catch(Exception e){}
+        gd.setGame(game);
+        DataAccess.updateGame(gameID, gd);
+
+        Assertions.assertEquals(DataAccess.getGame(gameID).getGame().getTurn(), ChessGame.TeamColor.BLACK);
+    }
+
+    @Test
+    public void updateGameTestB(){
+        DataAccess.clearAll();
+        String tokenA = DataAccess.addUser("John","123", "john@gmail.com");
+        int gameID = DataAccess.createGame("duck");
+        GameData gd = DataAccess.getGame(gameID);
+        ChessGame game = gd.getGame();
+        game.resetBoard();
+        try{
+            game.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null));
+        }
+        catch(Exception e){}
+        gd.setGame(game);
+        DataAccess.updateGame(gameID, gd);
+
+        Assertions.assertEquals(DataAccess.getGame(gameID).getGame().getBoard().getPiece(new ChessPosition(3, 1)).getPieceType(),
+                ChessPiece.PieceType.PAWN);
     }
 
 }
