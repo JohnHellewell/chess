@@ -5,6 +5,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class DataAccessTest {
+
+    @Test
+    public void clearServiceTest(){
+        String token = DataAccess.addUser("xyz", "abc", "hello@yahoo.com");
+        Assertions.assertTrue(DataAccess.isAuthValid(token));
+        DataAccess.clearAll();
+        Assertions.assertFalse(DataAccess.isAuthValid(token));
+
+    }
+
     @Test
     public void registerTestA(){ //check that it can register a new user
         DataAccess.clearAll();
@@ -94,7 +104,7 @@ class DataAccessTest {
         DataAccess.logout(token);
         Assertions.assertFalse(DataAccess.isAuthValid(token));
     }
-    
+
     @Test
     public void logoutTestB(){
         DataAccess.clearAll();
@@ -103,6 +113,20 @@ class DataAccessTest {
         DataAccess.logout(tokenB);
         Assertions.assertTrue(DataAccess.isAuthValid(tokenA));
         Assertions.assertFalse(DataAccess.isAuthValid(tokenB));
+    }
+
+    @Test
+    public void findUserTestA(){
+        DataAccess.clearAll();
+        String tokenA = DataAccess.addUser("John","123", "john@gmail.com");
+        Assertions.assertEquals(DataAccess.findUser(tokenA), "John");
+    }
+
+    @Test
+    public void findUserTestB(){
+        DataAccess.clearAll();
+        String tokenA = DataAccess.addUser("John","123", "john@gmail.com");
+        Assertions.assertNotEquals(DataAccess.findUser("fake token"), "John");
     }
 
 }
