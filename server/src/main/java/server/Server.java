@@ -136,22 +136,21 @@ public class Server {
     }
 
     private void makeMove(Session session, UserGameCommand ugc)throws Exception{
-        //assume the player is correct
+        //check that the player is making a valid move
+
+
+
         GameData gameData = DataAccess.getGame(ugc.getGameID());
         ChessGame game = gameData.getGame();
         try {
             game.makeMove(ugc.getMove());
         }catch(Exception e){
             //invalid move
-            System.out.println("error");
+            sendError(session, "Error: invalid move");
+            return;
         }
         gameData.setGame(game);
         DataAccess.updateGame(ugc.getGameID(), gameData);
-
-        //load game for player
-        //ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-        //response.setGame(DataAccess.getGame(ugc.getGameID()));
-        //session.getRemote().sendString(gson.toJson(response));
 
         loadGameAll(gameData);
         sendNotificationAllExcept("player made a move", session);
