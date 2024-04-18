@@ -6,13 +6,21 @@ import org.junit.jupiter.api.Test;
 
 class DataAccessTest {
     @Test
-    public void registerTest(){ //check that it can register a new user
+    public void registerTestA(){ //check that it can register a new user
         DataAccess.clearAll();
         String token = DataAccess.addUser("nathan","123", "john@gmail.com");
-        System.out.print("Token: ");
-        System.out.println(token);
+        Assertions.assertNotNull(token);;
+    }
 
+    @Test
+    public void registerTestB(){
+        DataAccess.clearAll();
+        String token = DataAccess.addUser("nathan","123", "john@gmail.com");
+
+        //register duplicate user
         token = DataAccess.addUser("nathan","123", "john@gmail.com");
+
+        Assertions.assertNull(token);
     }
 
     @Test
