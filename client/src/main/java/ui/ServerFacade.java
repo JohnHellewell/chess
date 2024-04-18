@@ -20,6 +20,7 @@ public class ServerFacade extends Endpoint{
 
     public static int port = 8080;
     private Session session;
+    boolean checkmate = false;
 
     public void openWebSocket() throws Exception{
         URI uri = new URI("ws://localhost:" + port + "/connect");
@@ -43,12 +44,23 @@ public class ServerFacade extends Endpoint{
     private void executeServerCommand(ServerMessage mes){
         switch(mes.getServerMessageType()){
             case ERROR -> { System.out.println("Server Error"); }
-            case NOTIFICATION -> { System.out.println(mes.getMessage());}
+            case NOTIFICATION -> { printNot(mes.getMessage());}
             case LOAD_GAME -> {
                 ClientMain.reloadBoard(mes.getGame().getGame());}
             default -> {}
         }
     }
+
+    private void printNot(String str){
+        if(str.toLowerCase().contains("checkmate")){
+            if(!checkmate){
+                System.out.println(str);
+                checkmate = true;
+            }
+        } else
+            System.out.println(str);
+    }
+
 
 
 
@@ -77,6 +89,12 @@ public class ServerFacade extends Endpoint{
         return "";
 
 
+    }
+
+    public void resign(String auth, int gameID)throws Exception{
+        Gson gson = new Gson();
+        UserGameCommand command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.RESIGN, null);
+        send(gson.toJson(command));
     }
 
 

@@ -153,7 +153,7 @@ public class Server {
         }
 
         completedGames.add(gameID);
-
+        //sendNotificationAllExcept(user + " resigned");
     }
 
 

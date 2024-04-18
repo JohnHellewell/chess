@@ -68,7 +68,7 @@ public class DataAccess {
         createIfNeeded();
         String token = generateAuthToken();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT authtoken FROM authdata WHERE username=?")) {
+            try (var preparedStatement = conn.prepareStatement("SELECT authtoken FROM authdata WHERE username = ?")) {
                 preparedStatement.setString(1, username);
                 try(var result = preparedStatement.executeQuery()){
                     if(result.next()){ //user already logged in; update their auth to a new one
@@ -77,6 +77,8 @@ public class DataAccess {
                             updateStatement.setString(1, username);
                             updateStatement.executeUpdate();
                         }
+
+
                         try (var updateStatement = conn.prepareStatement("INSERT INTO authdata (authtoken, username) VALUES(?, ?)")) {
                             updateStatement.setString(1, token);
                             updateStatement.setString(2, username);

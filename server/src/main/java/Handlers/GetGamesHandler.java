@@ -22,10 +22,12 @@ public class GetGamesHandler extends Handler{
 
             GamesResponse gamesResponse = (new GetGamesService()).getGames(auth);
             ArrayList<GameData> gameDataList = gamesResponse.games;
-            GameData[] temp = new GameData[gameDataList.size()];
-            gameDataList.toArray(temp);
-            String games = gson.toJson(temp, GameData[].class);
-
+            //GameData[] temp = new GameData[gameDataList.size()];
+            //gameDataList.toArray(temp);
+            //String games = gson.toJson(temp, GameData[].class);
+            GamesResponse response = new GamesResponse(gameDataList);
+            //String games = gson.toJson(response, GamesResponse.class);
+            String games = response.toString();
 
 
 

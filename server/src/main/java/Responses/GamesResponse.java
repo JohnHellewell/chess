@@ -20,13 +20,13 @@ public class GamesResponse {
         for(GameData game : games){
             String temp = "{";
             temp += "\"gameID\":" + game.getGameID() + ", ";
-            if(game.getWhiteUsername()==null||game.getWhiteUsername().equals("")){
+            if(game.getWhiteUsername()==null|| game.getWhiteUsername().isEmpty()){
                 temp += "\"whiteUsername\": null, ";
             } else {
                 temp += "\"whiteUsername\": " + game.getWhiteUsername() +", ";
             }
 
-            if(game.getBlackUsername()==null||game.getBlackUsername().equals("")){
+            if(game.getBlackUsername()==null|| game.getBlackUsername().isEmpty()){
                 temp += "\"blackUsername\": null, ";
             } else {
                 temp += "\"blackUsername\": " + game.getBlackUsername() +", ";

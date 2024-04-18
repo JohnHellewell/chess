@@ -144,6 +144,10 @@ public class ClientMain {
                 makeMove(input);
                 break;
             }
+            case "RESIGN":{
+                resign();
+                break;
+            }
             case "HELP":{
                 help();
                 break;
@@ -157,6 +161,17 @@ public class ClientMain {
             }
         }
 
+    }
+
+    private static void resign(){
+        try{
+            ServerFacade sf = new ServerFacade();
+            sf.openWebSocket();
+            sf.resign(authToken, gameID);
+        }catch(Exception e){
+            System.out.println("web socket connection failed");
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void makeMove(String[] input){
