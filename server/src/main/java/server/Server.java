@@ -139,11 +139,22 @@ public class Server {
         //assume the player is correct
         GameData gameData = DataAccess.getGame(ugc.getGameID());
         ChessGame game = gameData.getGame();
-        game.makeMove(ugc.getMove());
+        try {
+            game.makeMove(ugc.getMove());
+        }catch(Exception e){
+            //invalid move
+            System.out.println("error");
+        }
         gameData.setGame(game);
         DataAccess.updateGame(ugc.getGameID(), gameData);
 
-        loadGameAll();
+        //load game for player
+        //ServerMessage response = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        //response.setGame(DataAccess.getGame(ugc.getGameID()));
+        //session.getRemote().sendString(gson.toJson(response));
+
+        loadGameAll(gameData);
+        sendNotificationAllExcept("player made a move", session);
     }
 
     private void joinPlayer(Session session, UserGameCommand ugc) throws Exception{ //handles any attempts to join a game
@@ -186,9 +197,10 @@ public class Server {
         }
     }
 
-    private void loadGameAll(){
+    private void loadGameAll(GameData gd){
         Gson gson = new Gson();
         ServerMessage mes = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        mes.setGame(gd);
         for(Session s : sessions){
             try{
                 s.getRemote().sendString(gson.toJson(mes));

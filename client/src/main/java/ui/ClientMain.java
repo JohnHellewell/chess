@@ -140,6 +140,7 @@ public class ClientMain {
                     unrecognizedCommand(input);
                 }
                 makeMove(input);
+                break;
             }
             case "HELP":{
                 help();

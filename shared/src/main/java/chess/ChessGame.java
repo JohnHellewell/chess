@@ -16,7 +16,7 @@ public class ChessGame {
 
 
     public ChessGame() {
-        turn = null;
+        turn = TeamColor.WHITE;
         board = new ChessBoard();
     }
 
@@ -146,6 +146,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
+        turn = TeamColor.WHITE;
         this.board = board;
     }
 
@@ -203,6 +204,7 @@ public class ChessGame {
 
     public void resetBoard(){
         board.resetBoard();
+        turn = TeamColor.WHITE;
     }
 
     @Override
