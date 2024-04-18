@@ -142,6 +142,22 @@ public class Server {
 
         GameData gameData = DataAccess.getGame(ugc.getGameID());
         ChessGame game = gameData.getGame();
+        //find a way to get the player
+        String user = DataAccess.findUser(ugc.getAuthString());
+        String player = "";
+        if(gameData.getWhiteUsername()!=null && gameData.getWhiteUsername().equals(user))
+            player="WHITE";
+        if(gameData.getBlackUsername()!=null && gameData.getBlackUsername().equals(user))
+            player = "BLACK";
+
+        //make sure the right player is making a move
+        if((!player.equals("WHITE") && game.getTurn()== ChessGame.TeamColor.WHITE) ||
+                (!player.equals("BLACK") && game.getTurn()== ChessGame.TeamColor.BLACK)){
+            //not this players turn
+            sendError(session, "Error: not your turn");
+            return;
+        }
+
         try {
             game.makeMove(ugc.getMove());
         }catch(Exception e){

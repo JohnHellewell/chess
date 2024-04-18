@@ -64,7 +64,7 @@ public class ServerFacade extends Endpoint{
         Gson gson = new Gson();
         UserGameCommand command = new UserGameCommand(auth, gameID, UserGameCommand.CommandType.MAKE_MOVE, getPlayerString());
         command.setMove(move);
-
+        command.player = getPlayerString();
         send(gson.toJson(command));
     }
 

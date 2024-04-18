@@ -37,7 +37,7 @@ public class UserGameCommand {
 
     private final String authToken;
 
-    private String player;
+    public String player;
 
     private int gameID;
 

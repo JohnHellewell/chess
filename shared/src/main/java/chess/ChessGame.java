@@ -207,6 +207,10 @@ public class ChessGame {
         turn = TeamColor.WHITE;
     }
 
+    public TeamColor getTurn() {
+        return turn;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
