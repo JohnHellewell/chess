@@ -23,7 +23,7 @@ public class DatabaseManager {
             CREATE TABLE IF NOT EXISTS authdata (
                 `authtoken` varchar(256) NOT NULL,
                 `username` varchar(128) NOT NULL,
-                PRIMARY KEY (`username`)
+                PRIMARY KEY (`authtoken`)
             )
             """,
             """
